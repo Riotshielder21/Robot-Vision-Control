@@ -23,13 +23,17 @@ class image_converter:
         self.image_pub = rospy.Publisher("image_topic", Image, queue_size=1)
         # initialize a publisher to send joints' angular position to a topic called joints_pos
         self.joints_pub = rospy.Publisher("joints_pos", Float64MultiArray, queue_size=10)
+        
         # initialize a subscriber to receive messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
         self.image_sub = rospy.Subscriber("/robot/camera1/image_raw", Image, self.callback)
-        #(for lab3)
+
+
         # initialize a publisher to send robot end-effector position
         self.end_effector_pub = rospy.Publisher("end_effector_prediction", Float64MultiArray, queue_size=10)
+        
         # initialize a publisher to send desired trajectory
         self.trajectory_pub = rospy.Publisher("trajectory", Float64MultiArray, queue_size=10)
+        
         # initialize a publisher to send joints' angular position to the robot
         self.robot_joint1_pub = rospy.Publisher("/robot/joint1_position_controller/command", Float64, queue_size=10)
         self.robot_joint2_pub = rospy.Publisher("/robot/joint2_position_controller/command", Float64, queue_size=10)
@@ -70,16 +74,16 @@ class image_converter:
         yellow_u = (20,256,256)
         yellow_l = (0,50,50)
         
-        maskY = cv2.inRange(cv_image, yellow_l, yellow_u)
-        maskB = cv2.inRange(cv_image, blue_l, blue_u)
-        maskG = cv2.inRange(cv_image, green_l, green_u)
-        maskR = cv2.inRange(cv_image, red_l, red_u)
-        maskJ1 = cv2.cvtColor(maskY,cv2.COLOR_BGR2RGB)
-        maskJ2 = cv2.cvtColor(maskB,cv2.COLOR_BGR2RGB)
-        maskJ3 = cv2.cvtColor(maskG,cv2.COLOR_BGR2RGB)
-        maskJ4 = cv2.cvtColor(maskR,cv2.COLOR_BGR2RGB)
+        yzmaskY = cv2.inRange(yz_image1, yellow_l, yellow_u)
+        yzmaskB = cv2.inRange(yz_image1, blue_l, blue_u)
+        yzmaskG = cv2.inRange(yz_image1, green_l, green_u)
+        yzmaskR = cv2.inRange(yz_image1, red_l, red_u)
+        yzmaskJ1 = cv2.cvtColor(yzmaskY,cv2.COLOR_BGR2RGB)
+        yzmaskJ2 = cv2.cvtColor(yzmaskB,cv2.COLOR_BGR2RGB)
+        yzmaskJ3 = cv2.cvtColor(yzmaskG,cv2.COLOR_BGR2RGB)
+        yzmaskJ4 = cv2.cvtColor(yzmaskR,cv2.COLOR_BGR2RGB)
         
-        full_frame = cv_image & ( maskJ1 | maskJ2 | maskJ3 | maskJ4)
+        full_frame = yz_image1 & ( yzmaskJ1 | yzmaskJ2 | yzmaskJ3 | yzmaskJ4)
         
         frame_gray = cv2.cvtColor(full_frame, cv2.COLOR_RGB2GRAY)
         ret, joint_thresh = cv2.threshold(frame_gray, 1, 255, cv2.THRESH_BINARY)
@@ -115,11 +119,11 @@ class image_converter:
         else:
               link1 = 0
         if (jointCentres[1][0]-jointCentres[2][0]) != 0:
-              link2 = np.arctan2((jointCentres[1][1]-jointCentres[2][1])/(jointCentres[1][0]-jointCentres[2][0]))
+              link2 = np.arctan2((jointCentres[1][1]-jointCentres[2][1])/(jointCentres[1][0]-jointCentres[2][0]))-link1
         else:
               link2 = 0
         if (jointCentres[2][0]-jointCentres[3][0]) != 0:
-              link3 = np.arctan2((jointCentres[2][1]-jointCentres[3][1])/(jointCentres[2][0]-jointCentres[3][0]))
+              link3 = np.arctan2((jointCentres[2][1]-jointCentres[3][1])/(jointCentres[2][0]-jointCentres[3][0])) -link1 - link2
         else:
               link3 = 0
         
@@ -130,20 +134,19 @@ class image_converter:
         
         4###########################################################################
 
-        # change te value of self.joint.data to your estimated value from thew images once you have finalized the code
+        # change te value of self.joint.data to your estimated value from the images
         self.joints = Float64MultiArray()
         self.joints.data = np.array([link1,link2, link3])
-        # loading template for links as binary image (used in lab 2)
         #  self.link1 = cv2.inRange(cv2.imread('link1.png', 1), (200, 200, 200), (255, 255, 255))
         #  self.link2 = cv2.inRange(cv2.imread('link2.png', 1), (200, 200, 200), (255, 255, 255))
         #  self.link3 = cv2.inRange(cv2.imread('link3.png', 1), (200, 200, 200), (255, 255, 255))
         
-        # publish the estimated position of robot end-effector (for lab 3)
+        # publish the estimated position of robot end-effector
         # x_e_image = np.array([0, 0, 0])
         # self.end_effector=Float64MultiArray()
         # self.end_effector.data= x_e_image
 
-        # send control commands to joints (for lab 3)
+        # send control commands to joints
         # self.joint1=Float64()
         # self.joint1.data= q_d[0]
         # self.joint2=Float64()
@@ -151,7 +154,7 @@ class image_converter:
         # self.joint3=Float64()
         # self.joint3.data= q_d[2]
 
-        # Publishing the desired trajectory on a topic named trajectory(for lab 3)
+        # Publishing the desired trajectory on a topic named trajectory
         # x_d = self.trajectory()    # getting the desired trajectory
         # self.trajectory_desired= Float64MultiArray()
         # self.trajectory_desired.data=x_d
@@ -160,12 +163,12 @@ class image_converter:
         try:
             self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
             self.joints_pub.publish(self.joints)
-            # (for lab 3)
+           
             # self.trajectory_pub.publish(self.trajectory_desired)
             # self.end_effector_pub.publish(self.end_effector)
             # self.robot_joint1_pub.publish(self.joint1)
-            # self.robot_joint2_pub.publish(self.joint2)
             # self.robot_joint3_pub.publish(self.joint3)
+            # self.robot_joint3_pub.publish(self.joint4)
         except CvBridgeError as e:
             print(e)
 
