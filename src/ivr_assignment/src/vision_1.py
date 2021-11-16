@@ -25,8 +25,8 @@ class image_converter:
         self.joints_pub = rospy.Publisher("joints_pos", Float64MultiArray, queue_size=10)
         
         # initialize a subscriber to receive messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
-        self.image_sub = rospy.Subscriber("/robot/camera1/image_raw", Image, self.callback)
-
+        self.image_subyz = rospy.Subscriber("/robot/camera1/image_raw", Image, self.callbackyz)
+        self.image_subxz = rospy.Subscriber("/robot/camera2/image_raw", Image, self.callbackxz)
 
         # initialize a publisher to send robot end-effector position
         self.end_effector_pub = rospy.Publisher("end_effector_prediction", Float64MultiArray, queue_size=10)
@@ -42,6 +42,8 @@ class image_converter:
         # record the beginning time
         self.time_trajectory = rospy.get_time()
 
+#----------------------------------------------------------------------------------------------------------
+
     # Define a circular trajectory
     def trajectory(self):
         # get current time
@@ -49,44 +51,53 @@ class image_converter:
         x_d = float(6 * np.cos(cur_time * np.pi / 100))
         y_d = float(6 + np.absolute(1.5 * np.sin(cur_time * np.pi / 100)))
         return np.array([x_d, y_d])
-
-    # Receive data, process it, and publish
-    def callback(self, data):
+        
+#----------------------------------------------------------------------------------------------------------
+    # Receive data, process it, and publish yz plane
+    def callbackyz(self, data):
         # Receive the image
         try:
-            yz_image1 = self.bridge.imgmsg_to_cv2(data, "bgr8")
-            xz_image2 = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            yz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
         except CvBridgeError as e:
             print(e)
+    
+    # Receive data, process it, and publish xz plane
+    def callbackxz(self, data):
+	# Receive the image
+	try:
+	    xz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+	except CvBridgeError as e:
+	    print(e)
+#----------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------       
 
-       
-
-        # Perform image processing task (your code goes here)
+        # Perform image processing, green base joint not required
         # The image is loaded as cv_imag
 
         
-        blue_u = (256,20,20)
-        blue_l = (50,0,0)
         green_u = (20,256,20)
         green_l = (0,50,0)
+        blue_u = (256,20,20)
+        blue_l = (50,0,0)
         red_u = (20,20,256)
         red_l = (0,0,50)
         yellow_u = (20,256,256)
         yellow_l = (0,50,50)
         
+        yzmaskG = cv2.inRange(yz_image1, green_l, green_u)
         yzmaskY = cv2.inRange(yz_image1, yellow_l, yellow_u)
         yzmaskB = cv2.inRange(yz_image1, blue_l, blue_u)
-        yzmaskG = cv2.inRange(yz_image1, green_l, green_u)
         yzmaskR = cv2.inRange(yz_image1, red_l, red_u)
-        yzmaskJ1 = cv2.cvtColor(yzmaskY,cv2.COLOR_BGR2RGB)
-        yzmaskJ2 = cv2.cvtColor(yzmaskB,cv2.COLOR_BGR2RGB)
-        yzmaskJ3 = cv2.cvtColor(yzmaskG,cv2.COLOR_BGR2RGB)
+        
+        yzmaskJ1 = cv2.cvtColor(yzmaskG,cv2.COLOR_BGR2RGB)
+        yzmaskJ2 = cv2.cvtColor(yzmaskY,cv2.COLOR_BGR2RGB)
+        yzmaskJ3 = cv2.cvtColor(yzmaskB,cv2.COLOR_BGR2RGB)
         yzmaskJ4 = cv2.cvtColor(yzmaskR,cv2.COLOR_BGR2RGB)
         
-        full_frame = yz_image1 & ( yzmaskJ1 | yzmaskJ2 | yzmaskJ3 | yzmaskJ4)
+        full_frameyz = yz_image & ( yzmaskJ1 | yzmaskJ2 | yzmaskJ3 | yzmaskJ4)
         
-        frame_gray = cv2.cvtColor(full_frame, cv2.COLOR_RGB2GRAY)
-        ret, joint_thresh = cv2.threshold(frame_gray, 1, 255, cv2.THRESH_BINARY)
+        frame_grayyz = cv2.cvtColor(full_frameyz, cv2.COLOR_RGB2GRAY)
+        ret, joint_thresh = cv2.threshold(frame_grayyz, 1, 255, cv2.THRESH_BINARY)
 
         contours, hierarchy = cv2.findContours(joint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
@@ -98,6 +109,8 @@ class image_converter:
         
         jointCentres = []
         
+ #----------------------------------------------------------------------------------------------------------
+       
         for c in contours:
               # calculate moments for each contour
               M = cv2.moments(c)
@@ -112,18 +125,32 @@ class image_converter:
               jointCentres.append([cX/31,cY/31])
               #cv2.circle(image_copy, (cX, cY), 2, (255, 255, 255), -1)
               #cv2.putText(image_copy, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-              
+   	
+   	#link 1 = 4m
+   	#joint 2 = link 2 = 0m
+   	#link 2 = 3.2m
+   	#link 3 = 2.8m
+   	
+#----------------------------------------------------------------------------------------------------------        
         
+        #link 1 angle, green to yellow
         if (jointCentres[0][0]-jointCentres[1][0]) != 0:
               link1 = np.arctan2((jointCentres[0][1]-jointCentres[0][1])/(jointCentres[0][0]-jointCentres[1][0]))
+              print(link1)
         else:
               link1 = 0
+        
+        #link 2 angle, yellow to blue     
         if (jointCentres[1][0]-jointCentres[2][0]) != 0:
               link2 = np.arctan2((jointCentres[1][1]-jointCentres[2][1])/(jointCentres[1][0]-jointCentres[2][0]))-link1
+              print(link2)
         else:
               link2 = 0
+        
+        #link 3 angle, blue to red      
         if (jointCentres[2][0]-jointCentres[3][0]) != 0:
               link3 = np.arctan2((jointCentres[2][1]-jointCentres[3][1])/(jointCentres[2][0]-jointCentres[3][0])) -link1 - link2
+              print(link3)
         else:
               link3 = 0
         
@@ -131,8 +158,9 @@ class image_converter:
         #cv2.waitKey(100)
 
         #cv2.destroyAllWindows()
-        
-        4###########################################################################
+
+#--------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------
 
         # change te value of self.joint.data to your estimated value from the images
         self.joints = Float64MultiArray()
