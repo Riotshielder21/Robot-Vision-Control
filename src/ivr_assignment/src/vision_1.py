@@ -67,10 +67,10 @@ class image_converter:
     # Receive data, process it, and publish xz plane
     def callbackxz(self, data):
 	# Receive the image
-	try:
-	    xz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-	except CvBridgeError as e:
-	    print(e)
+        try:
+            xz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+        except CvBridgeError as e:
+            print(e)
 
 #----------------------------------------------------------------------------------------------------------        
 
@@ -163,8 +163,8 @@ class image_converter:
 
         # Perform image processing, green base joint not required
         
-        green_u = (20,256,20)
-        green_l = (0,50,0)
+        #green_u = (20,256,20)
+        #green_l = (0,50,0)
         blue_u = (256,20,20)
         blue_l = (50,0,0)
         red_u = (20,20,256)
@@ -172,26 +172,26 @@ class image_converter:
         yellow_u = (20,256,256)
         yellow_l = (0,50,50)
         
-        yzmaskG = cv2.inRange(yz_image, green_l, green_u)
+        #yzmaskG = cv2.inRange(yz_image, green_l, green_u)
         yzmaskY = cv2.inRange(yz_image, yellow_l, yellow_u)
         yzmaskB = cv2.inRange(yz_image, blue_l, blue_u)
         yzmaskR = cv2.inRange(yz_image, red_l, red_u)
-        xzmaskG = cv2.inRange(xz_image, green_l, green_u)
+        #xzmaskG = cv2.inRange(xz_image, green_l, green_u)
         xzmaskY = cv2.inRange(xz_image, yellow_l, yellow_u)
         xzmaskB = cv2.inRange(xz_image, blue_l, blue_u)
         xzmaskR = cv2.inRange(xz_image, red_l, red_u)
         
-        yzmaskJ1 = cv2.cvtColor(yzmaskG,cv2.COLOR_BGR2RGB)
+        #yzmaskJ1 = cv2.cvtColor(yzmaskG,cv2.COLOR_BGR2RGB)
         yzmaskJ2 = cv2.cvtColor(yzmaskY,cv2.COLOR_BGR2RGB)
         yzmaskJ3 = cv2.cvtColor(yzmaskB,cv2.COLOR_BGR2RGB)
         yzmaskJ4 = cv2.cvtColor(yzmaskR,cv2.COLOR_BGR2RGB)
-        xzmaskJ1 = cv2.cvtColor(xzmaskG,cv2.COLOR_BGR2RGB)
+        #xzmaskJ1 = cv2.cvtColor(xzmaskG,cv2.COLOR_BGR2RGB)
         xzmaskJ2 = cv2.cvtColor(xzmaskY,cv2.COLOR_BGR2RGB)
         xzmaskJ3 = cv2.cvtColor(xzmaskB,cv2.COLOR_BGR2RGB)
         xzmaskJ4 = cv2.cvtColor(xzmaskR,cv2.COLOR_BGR2RGB)
         
-        full_frameyz = yz_image & ( yzmaskJ1 | yzmaskJ2 | yzmaskJ3 | yzmaskJ4)
-        full_framexz = xz_image & ( xzmaskJ1 | xzmaskJ2 | xzmaskJ3 | xzmaskJ4)
+        full_frameyz = yz_image & (yzmaskJ2 | yzmaskJ3 | yzmaskJ4)
+        full_framexz = xz_image & (xzmaskJ2 | xzmaskJ3 | xzmaskJ4)
         
         frame_grayyz = cv2.cvtColor(full_frameyz, cv2.COLOR_RGB2GRAY)
         frame_grayxz = cv2.cvtColor(full_frameyz, cv2.COLOR_RGB2GRAY)
@@ -202,9 +202,9 @@ class image_converter:
         contoursyz, hierarchyyz = cv2.findContours(joint_threshyz, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         contoursxz, hierarchyxz = cv2.findContours(joint_threshxz, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
-        #image_copy = cv_image.copy()
-        #cv2.drawContours(image_copy, contours, -1, (255, 255, 255), 2, cv2.LINE_AA)
-        #cv2.imshow('Contoured', cv_image)
+        #image_copy = contoursyz.copy()
+        #cv2.drawContours(image_copy, contoursyz, -1, (255, 255, 255), 2, cv2.LINE_AA)
+        #cv2.imshow('Contoured', yz_image)
         #cv2.waitKey(10000)
         
         xzCentres = Contours(contoursxz)
