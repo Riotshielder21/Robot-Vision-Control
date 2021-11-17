@@ -21,10 +21,9 @@ class Image_processes:
             else:
                     cX, cY = 0, 0
 
-            #3m = 93 pixels | 1m = 31 pixels
             Centres.append([cX,cY])
 
-            return Centres
+        return Centres
         
 #----------------------------------------------------------------------------------------------------------        
  
@@ -87,6 +86,10 @@ class Image_processes:
         
         contours, hierarchy = cv2.findContours(joint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
+        # im_copy = image.copy()
+        # cv2.drawContours(im_copy, contours, -1, (255, 255, 255), 2, cv2.LINE_AA)
+        # cv2.imshow('Contoured', im_copy)
+
         return contours
 
     
