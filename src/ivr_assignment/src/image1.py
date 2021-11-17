@@ -39,7 +39,8 @@ class image_converter:
     im1=cv2.imshow('window1', self.cv_image1)
     cv2.waitKey(1)
 
-    xzcontours = imageprocessor1.imProcess(self.cv_image1)
+    yzcontours = imageprocessor1.imProcess(self.cv_image1)
+    yzCentres = imageprocessor1.Contours(yzcontours)
 
     # Publish the results
     try: 

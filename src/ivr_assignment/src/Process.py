@@ -25,38 +25,6 @@ class Image_processes:
             Centres.append([cX,cY])
         return Centres
         
-#----------------------------------------------------------------------------------------------------------     
-
-    def XYContours(self, xzcontours, yzcontours):
-        xCentres = []
-        yCentres = []
-        for cx in xzcontours:
-        
-          # calculate moments for each xz contour
-          M = cv2.moments(cx)
-          # calculate y,z coordinate of center
-          if M["m00"] != 0:
-                cX = int(M["m10"] / M["m00"])
-                cZ = int(M["m01"] / M["m00"])
-          else:
-                cX, cY = 0, 0
-          xCentres.append([cX])
-        for cy in yzcontours:
-            
-          # calculate moments for each yz contour
-          M = cv2.moments(cy)
-          # calculate y,z coordinate of center
-          if M["m00"] != 0:
-                cY = int(M["m10"] / M["m00"])
-                cZ = int(M["m01"] / M["m00"])
-          else:
-                cY, cZ = 0, 0
-          #3m = 93 pixels | 1m = 31 pixels
-          yCentres.append([cY])
-        Centres = []
-        return Centres
-   	
-
 #----------------------------------------------------------------------------------------------------------        
  
 #link 1 angle, green to yellow
