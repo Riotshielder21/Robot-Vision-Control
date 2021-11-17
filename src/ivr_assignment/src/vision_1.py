@@ -57,6 +57,7 @@ class image_converter:
     # Receive data, process it, and publish yz plane
     def callbackyz(self, data):
         # Receive the image
+        print('faaa')
         try:
             yz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
         except CvBridgeError as e:
@@ -66,7 +67,8 @@ class image_converter:
  
     # Receive data, process it, and publish xz plane
     def callbackxz(self, data):
-	# Receive the image
+        print('hello')
+    # Receive the image
         try:
             xz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
         except CvBridgeError as e:
@@ -76,88 +78,88 @@ class image_converter:
 
     def Contours(self, contours):
         Centres = []	
-	for c in contours:
-	      # calculate moments for each contour
-	      M = cv2.moments(c)
-	      # calculate y,z coordinate of center
-	      if M["m00"] != 0:
-	            cX = int(M["m10"] / M["m00"])
-	            cY = int(M["m01"] / M["m00"])
-	      else:
-	            cX, cY = 0, 0
-	      
-	      #3m = 93 pixels | 1m = 31 pixels
-	      Centres.append([cY,cZ])
-      	return Centres
+        for c in contours:
+            # calculate moments for each contour
+            M = cv2.moments(c)
+            # calculate y,z coordinate of center
+            if M["m00"] != 0:
+                    cX = int(M["m10"] / M["m00"])
+                    cY = int(M["m01"] / M["m00"])
+            else:
+                    cX, cY = 0, 0
+
+            #3m = 93 pixels | 1m = 31 pixels
+            Centres.append([cY,cZ])
+        return Centres
           	#link 1 = 4m
-	   	#joint 2 = link 2 = 0m
-	   	#link 2 = 3.2m
-	   	#link 3 = 2.8m
-	        #cv2.circle(image_copy, (cX, cY), 2, (255, 255, 255), -1)
-	        #cv2.putText(image_copy, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)	       
-	        #----------------------------------------------------------------------------------------------------------     
-	           
+       	#joint 2 = link 2 = 0m
+       	#link 2 = 3.2m
+       	#link 3 = 2.8m
+            #cv2.circle(image_copy, (cX, cY), 2, (255, 255, 255), -1)
+            #cv2.putText(image_copy, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)	       
+            #----------------------------------------------------------------------------------------------------------     
+
     def XYContours(self, xzcontours, yzcontours):
         xCentres = []
         yCentres = []
         for cx in xzcontours:
-		
-	      # calculate moments for each xz contour
-	      M = cv2.moments(cx)
-	      # calculate y,z coordinate of center
-	      if M["m00"] != 0:
-	            cX = int(M["m10"] / M["m00"])
-	            cZ = int(M["m01"] / M["m00"])
-	      else:
-	            cX, cY = 0, 0
-	      xCentres.append([cX])
+        
+          # calculate moments for each xz contour
+          M = cv2.moments(cx)
+          # calculate y,z coordinate of center
+          if M["m00"] != 0:
+                cX = int(M["m10"] / M["m00"])
+                cZ = int(M["m01"] / M["m00"])
+          else:
+                cX, cY = 0, 0
+          xCentres.append([cX])
         for cy in yzcontours:
-	    	
-	      # calculate moments for each yz contour
-	      M = cv2.moments(cy)
-	      # calculate y,z coordinate of center
-	      if M["m00"] != 0:
-	            cY = int(M["m10"] / M["m00"])
-	            cZ = int(M["m01"] / M["m00"])
-	      else:
-	            cY, cZ = 0, 0
-	      #3m = 93 pixels | 1m = 31 pixels
-	      yCentres.append([cY])
-	Centres = []
-	return Centres
+            
+          # calculate moments for each yz contour
+          M = cv2.moments(cy)
+          # calculate y,z coordinate of center
+          if M["m00"] != 0:
+                cY = int(M["m10"] / M["m00"])
+                cZ = int(M["m01"] / M["m00"])
+          else:
+                cY, cZ = 0, 0
+          #3m = 93 pixels | 1m = 31 pixels
+          yCentres.append([cY])
+        Centres = []
+        return Centres
    	
 
 #----------------------------------------------------------------------------------------------------------        
  
- #link 1 angle, green to yellow
-         def angles(self, centres):
-        	
-                if (centres[0][0]-centres[1][0]) != 0:
-                      link1 = np.arctan2((centres[0][1]-centres[0][1])/(centres[0][0]-centres[1][0]))
-                      print(link1)
-                else:
-                      link1 = 0
-		
-                #link 2 angle, yellow to blue     
-                if (centres[1][0]-centres[2][0]) != 0:
-                      link3 = np.arctan2((centres[1][1]-centres[2][1])/(centres[1][0]-centres[2][0]))-link1
-                      print(link3)
-                else:
-                      link3 = 0
-		
-                #link 3 angle, blue to red      
-                if (yzCentres[2][0]-centres[3][0]) != 0:
-                      link4 = np.arctan2((centres[2][1]-centres[3][1])/(centres[2][0]-centres[3][0])) -link1 - link3
-                      print(link4)
-                else:
-                      link4 = 0
-		
-                return np.array[link1, link3, link4]
-                #cv2.imshow('Centroids', image_copy)
-                #cv2.waitKey(100)
+#link 1 angle, green to yellow
+    def angles(self, centres):
+        
+        if (centres[0][0]-centres[1][0]) != 0:
+                link1 = np.arctan2((centres[0][1]-centres[0][1])/(centres[0][0]-centres[1][0]))
+                print(link1)
+        else:
+                link1 = 0
 
-                #cv2.destroyAllWindows()
- 
+        #link 2 angle, yellow to blue     
+        if (centres[1][0]-centres[2][0]) != 0:
+                link3 = np.arctan2((centres[1][1]-centres[2][1])/(centres[1][0]-centres[2][0]))-link1
+                print(link3)
+        else:
+                link3 = 0
+
+        #link 3 angle, blue to red      
+        if (yzCentres[2][0]-centres[3][0]) != 0:
+                link4 = np.arctan2((centres[2][1]-centres[3][1])/(centres[2][0]-centres[3][0])) -link1 - link3
+                print(link4)
+        else:
+                link4 = 0
+
+        return np.array[link1, link3, link4]
+        #cv2.imshow('Centroids', image_copy)
+        #cv2.waitKey(100)
+
+        #cv2.destroyAllWindows()
+
 #----------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------       
 
