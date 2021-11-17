@@ -23,7 +23,8 @@ class Image_processes:
 
             #3m = 93 pixels | 1m = 31 pixels
             Centres.append([cX,cY])
-        return Centres
+
+            return Centres
         
 #----------------------------------------------------------------------------------------------------------        
  
@@ -58,8 +59,8 @@ class Image_processes:
         # Perform image processing, green base joint not required
     def imProcess(self, image):
     
-        #green_u = (20,256,20)
-        #green_l = (0,50,0)
+        green_u = (20,256,20)
+        green_l = (0,50,0)
         blue_u = (256,20,20)
         blue_l = (50,0,0)
         red_u = (20,20,256)
@@ -67,18 +68,18 @@ class Image_processes:
         yellow_u = (20,256,256)
         yellow_l = (0,50,50)
         
-        #maskG = cv2.inRange(image, green_l, green_u)
+        maskG = cv2.inRange(image, green_l, green_u)
         maskY = cv2.inRange(image, yellow_l, yellow_u)
         maskB = cv2.inRange(image, blue_l, blue_u)
         maskR = cv2.inRange(image, red_l, red_u)
 
         
-        #maskJ1 = cv2.cvtColor(maskG,cv2.COLOR_BGR2RGB)
+        maskJ1 = cv2.cvtColor(maskG,cv2.COLOR_BGR2RGB)
         maskJ2 = cv2.cvtColor(maskY,cv2.COLOR_BGR2RGB)
         maskJ3 = cv2.cvtColor(maskB,cv2.COLOR_BGR2RGB)
         maskJ4 = cv2.cvtColor(maskR,cv2.COLOR_BGR2RGB)
         
-        full_frame = image & (maskJ2 | maskJ3 | maskJ4)
+        full_frame = image & (maskJ1 | maskJ2 | maskJ3 | maskJ4)
       
         frame_gray = cv2.cvtColor(full_frame, cv2.COLOR_RGB2GRAY)
         
@@ -86,9 +87,6 @@ class Image_processes:
         
         contours, hierarchy = cv2.findContours(joint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
-        image_copy = image.copy()
-        cv2.drawContours(image_copy, contours, -1, (255, 255, 255), 2, cv2.LINE_AA)
-        cv2.imshow('Contoured', image)
-        cv2.waitKey(10000)
-        
         return contours
+
+    

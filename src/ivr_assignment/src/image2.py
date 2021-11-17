@@ -41,6 +41,12 @@ class image_converter:
     xzcontours = imageprocessor2.imProcess(self.cv_image2)
     xzCentres = imageprocessor2.Contours(xzcontours)
 
+    image_copy = self.cv_image2.copy()
+    for c in xzCentres:
+        cv2.circle(image_copy, (c[0], c[1]), 2, (255, 255, 255), -1)
+        cv2.putText(image_copy, "centroid", (c[0] - 25, c[1] - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+    cv2.imshow("Centriods",image_copy) 
+
     # Publish the results
     try: 
       self.imxz.publish(xzCentres)

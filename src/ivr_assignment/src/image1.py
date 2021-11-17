@@ -36,12 +36,16 @@ class image_converter:
     except CvBridgeError as e:
       print(e)
 
-    im1=cv2.imshow('window1', self.cv_image1)
-    cv2.waitKey(1)
-
     yzcontours = imageprocessor1.imProcess(self.cv_image1)
     yzCentres = imageprocessor1.Contours(yzcontours)
 
+    image_copy = self.cv_image1.copy()
+
+    for c in yzCentres:
+        cv2.circle(image_copy, (c[0], c[1]), 2, (255, 255, 255), -1)
+        cv2.putText(image_copy, "centroid", (c[0] - 25, c[1] - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+    cv2.imshow("Centriods",image_copy)
+    cv2.waitKey(1)
     # Publish the results
     try: 
       self.imyz.publish(yzCentres)
