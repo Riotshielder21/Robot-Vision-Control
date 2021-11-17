@@ -28,7 +28,7 @@ class image_converter:
         self.image_pubxz = rospy.Publisher("image_topic2", Image, queue_size=1)
     # initialize a subscriber to recieve messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
     
-        self.image_subyz = rospy.Subscriber("/camera/robot/image_raw", Image, self.callbackyz)
+        self.image_subyz = rospy.Subscriber("/camera1/robot/image_raw", Image, self.callbackyz)
         self.image_subxz = rospy.Subscriber("/camera2/robot/image_raw", Image, self.callbackxz)
 	
         # initialize a publisher to send robot end-effector position
@@ -61,13 +61,13 @@ class image_converter:
     def callbackyz(self, data):
         # Receive the image
         print('faaa')
-        try:
-              self.yz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        except CvBridgeError as e:
-              print(e)
+      #   try:
+      #         self.yz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+      #   except CvBridgeError as e:
+      #         print(e)
         
-        yz_image = cv2.imshow('yz_image', self.yz_image)
-        cv2.waitKey(1)
+      #   yz_image = cv2.imshow('yz_image', self.yz_image)
+      #   cv2.waitKey(1)
     
 #----------------------------------------------------------------------------------------------------------        
  
@@ -75,13 +75,13 @@ class image_converter:
     def callbackxz(self, data):
         print('hello')
     # Receive the image
-        try:
-              self.xz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        except CvBridgeError as e:
-              print(e)
+      #   try:
+      #         self.xz_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+      #   except CvBridgeError as e:
+      #         print(e)
 
-        xz_image = cv2.imshow('xz_image', self.xz_image)
-        cv2.waitKey(1)
+      #   xz_image = cv2.imshow('xz_image', self.xz_image)
+      #   cv2.waitKey(1)
 
 #----------------------------------------------------------------------------------------------------------        
 
