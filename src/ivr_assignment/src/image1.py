@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
+from typing import Dict
 import roslib
 import sys
 import rospy
 import cv2
 import numpy as np
 import Process
-from Process import *
+import json
+from Process import Image_processes
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from std_msgs.msg import Float64MultiArray, Float64, UInt8MultiArray
@@ -20,7 +22,7 @@ class image_converter:
     # initialize the node named image_processing
     rospy.init_node('image_processing', anonymous=True)
     # initialize a publisher to send xz coordinates
-    self.imyz = rospy.Publisher("yzCoords",UInt8MultiArray ,queue_size = 1)
+    self.imyz = rospy.Publisher("Coords", String ,queue_size = 1)
     # initialize a subscriber to recieve messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
     self.image_sub1 = rospy.Subscriber("/camera1/robot/image_raw",Image,self.callback1)
     # initialize the bridge between openCV and ROS
@@ -38,7 +40,8 @@ class image_converter:
 
     yzcontours = imageprocessor1.imProcess(self.cv_image1)
     yzCentres = imageprocessor1.Contours(yzcontours)
-    print(yzCentres)
+    DictYZ = {}
+    DictYZ["YZ"] = yzCentres
 
     # image_copy = self.cv_image1.copy()
     # for c in yzCentres:
@@ -49,7 +52,7 @@ class image_converter:
 
     # Publish the results
     try: 
-      self.imyz.publish(np.array, yzCentres)
+      self.imyz.publish(json.dumps(DictYZ))
     except CvBridgeError as e:
       print(e)
 

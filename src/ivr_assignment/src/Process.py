@@ -10,20 +10,49 @@ class Image_processes:
         return
 
     def Contours(self, contours):
-        Centres = []	
-        for c in contours:
-            # calculate moments for each contour
-            M = cv2.moments(c)
-            # calculate y,z coordinate of center
-            if M["m00"] != 0:
-                    cX = int(M["m10"] / M["m00"])
-                    cY = int(M["m01"] / M["m00"])
-            else:
-                    cX, cY = 0, 0
+        DicCentres = {}
+        # calculate moments for each contour
+        if (contours['Green']!=[]):
+                M = cv2.moments(contours['Green'][0])
+                # calculate y,z coordinate of center
+                if M["m00"] != 0:
+                      cX = int(M["m10"] / M["m00"])
+                      cY = int(M["m01"] / M["m00"])
+                else:
+                      cX, cY = 0, 0
+                DicCentres['Green']=[cX,cY]
 
-            Centres.append([cX,cY])
+        if (contours['Yellow']!=[]):
+                M = cv2.moments(contours['Yellow'][0])
+                # calculate y,z coordinate of center
+                if M["m00"] != 0:
+                      cX = int(M["m10"] / M["m00"])
+                      cY = int(M["m01"] / M["m00"])
+                else:
+                      cX, cY = 0, 0
+                DicCentres['Yellow']=[cX,cY]
 
-        return Centres
+        if (contours['Blue']!=[]):
+                M = cv2.moments(contours['Blue'][0])
+                # calculate y,z coordinate of center
+                if M["m00"] != 0:
+                      cX = int(M["m10"] / M["m00"])
+                      cY = int(M["m01"] / M["m00"])
+                else:
+                      cX, cY = 0, 0
+                DicCentres['Blue']=[cX,cY]
+
+        if (contours['Red']!=[]):
+                M = cv2.moments(contours['Red'][0])
+                # calculate y,z coordinate of center
+                if M["m00"] != 0:
+                      cX = int(M["m10"] / M["m00"])
+                      cY = int(M["m01"] / M["m00"])
+                else:
+                      cX, cY = 0, 0
+                DicCentres['Red']=[cX,cY]
+
+        return DicCentres
         
 #----------------------------------------------------------------------------------------------------------        
  
@@ -78,18 +107,31 @@ class Image_processes:
         maskJ3 = cv2.cvtColor(maskB,cv2.COLOR_BGR2RGB)
         maskJ4 = cv2.cvtColor(maskR,cv2.COLOR_BGR2RGB)
         
-        full_frame = image & (maskJ1 | maskJ2 | maskJ3 | maskJ4)
+        Green_frame = image & maskJ1
+        Yellow_frame = image & maskJ2 
+        Blue_frame = image & maskJ3 
+        Red_frame = image & maskJ4
       
-        frame_gray = cv2.cvtColor(full_frame, cv2.COLOR_RGB2GRAY)
+        Gframe_gray = cv2.cvtColor(Green_frame, cv2.COLOR_RGB2GRAY)
+        Yframe_gray = cv2.cvtColor(Yellow_frame, cv2.COLOR_RGB2GRAY)
+        Bframe_gray = cv2.cvtColor(Blue_frame, cv2.COLOR_RGB2GRAY)
+        Rframe_gray = cv2.cvtColor(Red_frame, cv2.COLOR_RGB2GRAY)
         
-        ret, joint_thresh = cv2.threshold(frame_gray, 1, 255, cv2.THRESH_BINARY)
+        Gret, Gjoint_thresh = cv2.threshold(Gframe_gray, 1, 255, cv2.THRESH_BINARY)
+        Yret, Yjoint_thresh = cv2.threshold(Yframe_gray, 1, 255, cv2.THRESH_BINARY)
+        Bret, Bjoint_thresh = cv2.threshold(Bframe_gray, 1, 255, cv2.THRESH_BINARY)
+        Rret, Rjoint_thresh = cv2.threshold(Rframe_gray, 1, 255, cv2.THRESH_BINARY)
         
-        contours, hierarchy = cv2.findContours(joint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        Gcontours, hierarchy = cv2.findContours(Gjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        Ycontours, hierarchy = cv2.findContours(Yjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        Rcontours, hierarchy = cv2.findContours(Bjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        Bcontours, hierarchy = cv2.findContours(Rjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
+        contourDic = {"Green": Gcontours,"Yellow": Ycontours,"Blue": Rcontours,"Red": Bcontours}
         # im_copy = image.copy()
         # cv2.drawContours(im_copy, contours, -1, (255, 255, 255), 2, cv2.LINE_AA)
         # cv2.imshow('Contoured', im_copy)
 
-        return contours
+        return contourDic
 
     
