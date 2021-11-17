@@ -1,5 +1,14 @@
-class image_processes:
+import roslib
+import sys
+import rospy
+import cv2
+import numpy as np
 
+class Image_processes:
+
+    def _init_(self):
+        return
+        
     def Contours(self, contours):
         Centres = []	
         for c in contours:
@@ -13,7 +22,7 @@ class image_processes:
                     cX, cY = 0, 0
 
             #3m = 93 pixels | 1m = 31 pixels
-            Centres.append([cY,cZ])
+            Centres.append([cX,cY])
         return Centres
         
 #----------------------------------------------------------------------------------------------------------     
@@ -54,30 +63,26 @@ class image_processes:
     def angles(self, centres):
         
         if (centres[0][0]-centres[1][0]) != 0:
-                link1 = np.arctan2((centres[0][1]-centres[0][1])/(centres[0][0]-centres[1][0]))
-                print(link1)
+                joint2 = np.arctan2((centres[0][1]-centres[0][1])/(centres[0][0]-centres[1][0]))
+                print(joint2)
         else:
-                link1 = 0
+                joint2 = 0
 
         #link 2 angle, yellow to blue     
         if (centres[1][0]-centres[2][0]) != 0:
-                link3 = np.arctan2((centres[1][1]-centres[2][1])/(centres[1][0]-centres[2][0]))-link1
-                print(link3)
+                joint3 = np.arctan2((centres[1][1]-centres[2][1])/(centres[1][0]-centres[2][0]))-joint2
+                print(joint3)
         else:
-                link3 = 0
+                joint3 = 0
 
         #link 3 angle, blue to red      
-        if (yzCentres[2][0]-centres[3][0]) != 0:
-                link4 = np.arctan2((centres[2][1]-centres[3][1])/(centres[2][0]-centres[3][0])) -link1 - link3
-                print(link4)
+        if (centres[2][0]-centres[3][0]) != 0:
+                joint4 = np.arctan2((centres[2][1]-centres[3][1])/(centres[2][0]-centres[3][0])) -joint2 - joint3
+                print(joint4)
         else:
-                link4 = 0
+                joint4 = 0
 
-        return np.array[link1, link3, link4]
-        #cv2.imshow('Centroids', image_copy)
-        #cv2.waitKey(100)
-
-        #cv2.destroyAllWindows()
+        return np.array[joint2, joint3, joint4]
 
 #----------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------       
@@ -94,10 +99,10 @@ class image_processes:
         yellow_u = (20,256,256)
         yellow_l = (0,50,50)
         
-        #maskG = cv2.inRange(yz_image, green_l, green_u)
-        maskY = cv2.inRange(yz_image, yellow_l, yellow_u)
-        maskB = cv2.inRange(yz_image, blue_l, blue_u)
-        maskR = cv2.inRange(yz_image, red_l, red_u)
+        #maskG = cv2.inRange(image, green_l, green_u)
+        maskY = cv2.inRange(image, yellow_l, yellow_u)
+        maskB = cv2.inRange(image, blue_l, blue_u)
+        maskR = cv2.inRange(image, red_l, red_u)
 
         
         #maskJ1 = cv2.cvtColor(maskG,cv2.COLOR_BGR2RGB)
@@ -118,4 +123,4 @@ class image_processes:
         cv2.imshow('Contoured', image)
         cv2.waitKey(10000)
         
-        Centres = Contours(contours)
+        Centres = self.Contours(contours)

@@ -5,6 +5,8 @@ import sys
 import rospy
 import cv2
 import numpy as np
+import Process
+from Process import *
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from std_msgs.msg import Float64MultiArray, Float64
@@ -32,12 +34,12 @@ class image_converter:
       self.cv_image1 = self.bridge.imgmsg_to_cv2(data, "bgr8")
     except CvBridgeError as e:
       print(e)
-    
-    # Uncomment if you want to save the image
-    #cv2.imwrite('image_copy.png', cv_image)
 
     im1=cv2.imshow('window1', self.cv_image1)
     cv2.waitKey(1)
+
+    jointvaluesyz = Image_processes.imProcess(self.cv_image1)
+
     # Publish the results
     try: 
       self.image_pub1.publish(self.bridge.cv2_to_imgmsg(self.cv_image1, "bgr8"))

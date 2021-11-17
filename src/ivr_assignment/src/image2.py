@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from Process import Image_processes
 import roslib
 import sys
 import rospy
@@ -32,10 +33,11 @@ class image_converter:
       self.cv_image2 = self.bridge.imgmsg_to_cv2(data, "bgr8")
     except CvBridgeError as e:
       print(e)
-    # Uncomment if you want to save the image
-    #cv2.imwrite('image_copy.png', cv_image)
+    
     im2=cv2.imshow('window2', self.cv_image2)
     cv2.waitKey(1)
+
+    jointvaluesxz = Image_processes.imProcess(self.cv_image2)
 
     # Publish the results
     try: 
