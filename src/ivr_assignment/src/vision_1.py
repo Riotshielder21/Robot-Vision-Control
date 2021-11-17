@@ -174,7 +174,7 @@ class image_converter:
 #----------------------------------------------------------------------------------------------------------       
 
         # Perform image processing, green base joint not required
-    def  imProcess(self, image):
+    def imProcess(self, image):
     
         #green_u = (20,256,20)
         #green_l = (0,50,0)
