@@ -9,7 +9,7 @@ import Process
 from Process import *
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from std_msgs.msg import Float64MultiArray, Float64
+from std_msgs.msg import Float64MultiArray, Float64, UInt8MultiArray
 from cv_bridge import CvBridge, CvBridgeError
 
 
@@ -19,8 +19,8 @@ class image_converter:
   def __init__(self):
     # initialize the node named image_processing
     rospy.init_node('image_processing', anonymous=True)
-    # initialize a publisher to send images from camera1 to a topic named image_topic1
-    self.image_pub1 = rospy.Publisher("image_topic1",Image, queue_size = 1)
+    # initialize a publisher to send xz coordinates
+    self.imyz = rospy.Publisher("yzCoords",UInt8MultiArray ,queue_size = 1)
     # initialize a subscriber to recieve messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
     self.image_sub1 = rospy.Subscriber("/camera1/robot/image_raw",Image,self.callback1)
     # initialize the bridge between openCV and ROS
@@ -44,7 +44,7 @@ class image_converter:
 
     # Publish the results
     try: 
-      self.image_pub1.publish(self.bridge.cv2_to_imgmsg(self.cv_image1, "bgr8"))
+      self.imyz.publish(yzCentres)
     except CvBridgeError as e:
       print(e)
 
