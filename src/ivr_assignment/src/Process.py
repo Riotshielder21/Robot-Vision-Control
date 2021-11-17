@@ -59,6 +59,17 @@ class Image_processes:
 #link 1 angle, green to yellow
     def angles(self, centres):
         
+# 
+# 
+# 
+        # needs to be adjusted to calculate angles for the 3 dimensions
+# 
+# 
+# 
+# 
+
+
+
         if (centres[0][0]-centres[1][0]) != 0:
                 joint2 = np.arctan2((centres[0][1]-centres[0][1])/(centres[0][0]-centres[1][0]))
                 print(joint2)
