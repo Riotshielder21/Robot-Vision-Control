@@ -31,6 +31,7 @@ class image_converter:
   def callback1(self,data):
     # Recieve the image
     try:
+      imageprocessor1 = Image_processes()
       self.cv_image1 = self.bridge.imgmsg_to_cv2(data, "bgr8")
     except CvBridgeError as e:
       print(e)
@@ -38,7 +39,7 @@ class image_converter:
     im1=cv2.imshow('window1', self.cv_image1)
     cv2.waitKey(1)
 
-    xzcontours = Image_processes.imProcess(self.cv_image1)
+    xzcontours = imageprocessor1.imProcess(self.cv_image1)
 
     # Publish the results
     try: 
