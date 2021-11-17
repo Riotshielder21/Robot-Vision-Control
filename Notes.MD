@@ -1,7 +1,9 @@
 ## Notes:
 
-1. We need to refactor this git repo. No ned to publish the whole catkin workspace
-2. asdf
+[x]. We need to refactor this git repo. No ned to publish the whole catkin workspace
+[]. Change how we are doing the ros messages to move away from json
+[]. Change back Simulate speed to the default. (Remove Dev preformance mode) worldfile
+
 
 
 
