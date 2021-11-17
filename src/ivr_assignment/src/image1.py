@@ -40,8 +40,6 @@ class image_converter:
 
     yzcontours = imageprocessor1.imProcess(self.cv_image1)
     yzCentres = imageprocessor1.Contours(yzcontours)
-    DictYZ = {}
-    DictYZ["YZ"] = yzCentres
 
     # image_copy = self.cv_image1.copy()
     # for c in yzCentres:
@@ -52,7 +50,7 @@ class image_converter:
 
     # Publish the results
     try: 
-      self.imyz.publish(json.dumps(DictYZ))
+      self.imyz.publish(json.dumps(yzCentres))
     except CvBridgeError as e:
       print(e)
 
