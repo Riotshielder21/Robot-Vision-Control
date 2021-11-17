@@ -38,7 +38,7 @@ class image_converter:
     im1=cv2.imshow('window1', self.cv_image1)
     cv2.waitKey(1)
 
-    jointvaluesyz = Image_processes.imProcess(self.cv_image1)
+    xzcontours = Image_processes.imProcess(self.cv_image1)
 
     # Publish the results
     try: 

@@ -8,7 +8,7 @@ class Image_processes:
 
     def _init_(self):
         return
-        
+
     def Contours(self, contours):
         Centres = []	
         for c in contours:
@@ -123,4 +123,4 @@ class Image_processes:
         cv2.imshow('Contoured', image)
         cv2.waitKey(10000)
         
-        Centres = self.Contours(contours)
+        return contours
