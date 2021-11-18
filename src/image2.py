@@ -22,7 +22,7 @@ class image_converter:
     # initialize the node named image_processing
     rospy.init_node('image_processing', anonymous=True)
     # initialize a publisher to send xz coordinates
-    self.imxz = rospy.Publisher("Coords", String, queue_size = 1)
+    self.imxz = rospy.Publisher("xzCoords", String, queue_size = 1)
     # initialize a subscriber to recieve messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
     self.image_sub2 = rospy.Subscriber("/camera2/robot/image_raw",Image,self.callback2)
     # initialize the bridge between openCV and ROS
