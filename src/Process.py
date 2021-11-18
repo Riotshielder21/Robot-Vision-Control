@@ -56,8 +56,7 @@ class Image_processes:
         
 #----------------------------------------------------------------------------------------------------------        
  
-#link 1 angle, green to yellow
-    def angles(self, centres):
+    def anglesVis1(self, centres):
         
 # 
 # 
@@ -67,7 +66,6 @@ class Image_processes:
 # 
 # 
 # 
-
 
 
         if (centres[0][0]-centres[1][0]) != 0:
@@ -91,6 +89,8 @@ class Image_processes:
                 joint4 = 0
 
         return np.array[joint2, joint3, joint4]
+
+    def anglesVis2(self, centres):
 
 #----------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------       
