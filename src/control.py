@@ -14,7 +14,8 @@ from sensor_msgs.msg import JointState
 import rospy
 from rospy import Time 
 import math
-
+from tf.transformations import quaternion_matrix
+from tf.transformations import quaternion_from_matrix
 class image_converter:
 
     # Defines publisher and subscriber
@@ -43,58 +44,113 @@ class image_converter:
             
             self.b.sendTransform(translation, rotation, Time.now(), 'memes', 'base')
             rate.sleep()
-        
+    def frame_to_pos(self, frame):
+        return (frame[0][3], frame[1][3], frame[2][3])
+    def frame_to_rot(self, frame):
+        M1 = frame
+        # q = [x1, y1, z1, 1.0]   
+        r = np.math.sqrt(float(1)+M1[0,0]+M1[1,1]+M1[2,2])*0.5
+        i = (M1[2,1]-M1[1,2])/(4*r)
+        j = (M1[0,2]-M1[2,0])/(4*r)
+        k = (M1[1,0]-M1[0,1])/(4*r)
+        rotation = (i,j,k,r)
+        return rotation
     def callback(self, data):
         print("callback " + str(data.name))
         print(data.position)
         a1 = data.position[0]
         a2 = data.position[2]
         a3 = data.position[3]
-        print([a1,a2,a3])
-        frame0 = np.array(
-        [[math.cos(a1),-math.sin(a1),0,0],
-        [math.sin(a1),math.cos(a1),0,0],
-        [0,0,1,0],
-        [0,0,0,1]])
-        #Rot x
-        frame1 = np.array(
-        [[1,0,0,0],
-        [0,math.cos(a2),-math.sin(a2),0],
-        [0,math.sin(a2),math.cos(a2),4],
-        [0,0,0,1]])
-        # #Rot y
-        frame2 = np.array(
-        [[math.cos(a3),0,math.sin(a3),0],
-        [0,1,0,0],
-        [-math.sin(a3),0,math.cos(a3),3.2],
-        [0,0,0,1]])
-        frame3= np.array(
-        [[1,0,0,0],
-        [0,1,0,0],
-        [0,0,1,2.8],
-        [0,0,0,1]])
-        #Rot Z
-        # frame1 = np.array(
+        # # print([a1,a2,a3])
+        # # frame0 = np.array(
+        # # [[math.cos(a1),-math.sin(a1),0,0],
+        # # [math.sin(a1),math.cos(a1),0,0],
+        # # [0,0,1,0],
+        # # [0,0,0,1]])
+        # # #Rot x
+        # # frame1 = np.array(
+        # # [[1,0,0,0],
+        # # [0,math.cos(a2),-math.sin(a2),0],
+        # # [0,math.sin(a2),math.cos(a2),4],
+        # # [0,0,0,1]])
+        # # # #Rot y
+        # # frame2 = np.array(
+        # # [[math.cos(a3),0,math.sin(a3),0],
+        # # [0,1,0,0],
+        # # [-math.sin(a3),0,math.cos(a3),3.2],
+        # # [0,0,0,1]])
+        # # frame3= np.array(
+        # # [[1,0,0,0],
+        # # [0,1,0,0],
+        # # [0,0,1,2.8],
+        # # [0,0,0,1]])
+        # # Rot Z
+        # frame0 = np.array(
         # [[math.cos(a1),-math.sin(a1),0,0],
         # [math.sin(a1),math.cos(a1),0,0],
-        # [0,0,1,4],
+        # [0,0,1,0.5],
         # [0,0,0,1]])
-        # #Rot x
-        # frame2 = np.array(
+        # # frame1 = np.array(
+        # # [[1,0,0,0],
+        # # [0,1,0,0],
+        # # [0,0,1,4],
+        # # [0,0,0,1]])
+        # # #Rot x
+        # frame1 = np.array(
         # [[1,0,0,0],
         # [0,math.cos(a2),-math.sin(a2),0],
-        # [0,math.sin(a2),math.cos(a2),3.2],
+        # [0,math.sin(a2),math.cos(a2),4],
         # [0,0,0,1]])
         # #Rot y
-        # frame3 = np.array(
+        # frame2 = np.array(
         # [[math.cos(a3),0,math.sin(a3),0],
         # [0,1,0,0],
-        # [-math.sin(a3),0,math.cos(a3),2.8],
+        # [-math.sin(a3),0,math.cos(a3),3.2],
         # [0,0,0,1]])
-        end = frame3@frame2@frame1@frame0
-        translation = (end[0][3], end[1][3], end[2][3])
+        # frame3 = np.array(
+        # [[1,0,0,0],
+        # [0,1,0,0],
+        # [0,0,1,2.8],
+        # [0,0,0,1]])
+
+        
+        #Rot Z
+        frame1 = np.array(
+        [[math.cos(a1),-math.sin(a1),0,0],
+        [math.sin(a1),math.cos(a1),0,0],
+        [0,0,1,4.5],
+        [0,0,0,1]])
+        #Rot x
+        frame2 = np.array(
+        [[1,0,0,0],
+        [0,math.cos(a2),-math.sin(a2),0],
+        [0,math.sin(a2),math.cos(a2),3.2],
+        [0,0,0,1]])
+        #Rot y
+        frame3 = np.array(
+        [[math.cos(a3),0,math.sin(a3),0],
+        [0,1,0,0],
+        [-math.sin(a3),0,math.cos(a3),2.8],
+        [0,0,0,1]])
+        end = frame2@frame1
+        translation = self.frame_to_pos(end)
+        rotation = self.frame_to_rot(end)
         print(translation)
-        rotation = (0.0, 0.0, 0.0, 1.0)   
+        # teye = translation
+        # print(quaternion_from_matrix(teye))
+        # x1 = math.atan2(teye[3][2],teye[3][2])
+        # y1 = math.atan2(-teye[3][1],math.sqrt(math.pow(teye[3][2],2) + math.sqrt(math.pow(teye[3][3],2))))
+        # z1 = math.atan2(teye[2][1],teye[1][1])
+        
+
+        # x1 = math.atan2(teye[2][1],teye[2][1])
+        # y1 = math.atan2(-teye[2][0],math.sqrt(math.pow(teye[2][1],2) + math.sqrt(math.pow(teye[2][2],2))))
+        # z1 = math.atan2(teye[1][0],teye[0][0])
+        # print(x1,y1,x1)
+        # self.b.sendTransform(self.frame_to_pos(frame0), self.frame_to_rot(frame0), Time.now(), 't0', 'base')
+        self.b.sendTransform(self.frame_to_pos(frame1), self.frame_to_rot(frame1), Time.now(), 't1', 't0')
+        self.b.sendTransform(self.frame_to_pos(frame2), self.frame_to_rot(frame2), Time.now(), 't2', 't1')
+        self.b.sendTransform(self.frame_to_pos(frame3), self.frame_to_rot(frame3), Time.now(), 't3', 't2')
         self.b.sendTransform(translation, rotation, Time.now(), 'memes', 'base')
         # print(pos)
         # print(frame3* frame2* frame1)
