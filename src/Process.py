@@ -58,15 +58,7 @@ class Image_processes:
  
     def anglesVis1(self, centres):
         
-# 
-# 
-# 
         # needs to be adjusted to calculate angles for the 3 dimensions
-# 
-# 
-# 
-# 
-
 
         if (centres[0][0]-centres[1][0]) != 0:
                 joint2 = np.arctan2((centres[0][1]-centres[0][1])/(centres[0][0]-centres[1][0]))
@@ -91,6 +83,7 @@ class Image_processes:
         return np.array[joint2, joint3, joint4]
 
     def anglesVis2(self, centres):
+            return 0
 
 #----------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------       
@@ -139,9 +132,11 @@ class Image_processes:
         Bcontours, hierarchy = cv2.findContours(Rjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
         contourDic = {"Green": Gcontours,"Yellow": Ycontours,"Blue": Rcontours,"Red": Bcontours}
-        # im_copy = image.copy()
-        # cv2.drawContours(im_copy, contours, -1, (255, 255, 255), 2, cv2.LINE_AA)
-        # cv2.imshow('Contoured', im_copy)
+
+        #im_copy = image.copy()
+        #cv2.drawContours(im_copy, Gcontours, -1, (255, 255, 255), 2, cv2.LINE_AA)
+        #cv2.imshow('Contoured', im_copy)
+        #cv2.waitKey(10000)
 
         return contourDic
 

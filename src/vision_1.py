@@ -21,6 +21,10 @@ class image_converter:
 
     # Defines publisher and subscriber
     def __init__(self):
+
+        self.CentresDict = {}
+        self.matchedCoords = {}
+
         # initialize the bridge between openCV and ROS
         self.bridge = CvBridge()
         # initialize the node named image_processing
@@ -33,32 +37,28 @@ class image_converter:
         self.joints_pub = rospy.Publisher(
             "joint_angles", Float64MultiArray, queue_size=10)
 
-        self.CentresDict = {}
-        self.matchedCoords = {}
-
         # record the beginning time
         self.time_trajectory = rospy.get_time()
 
 # --------------------------------------------------------------------------------------------------------------
     def callbackyz(self, data):
 
-        dictionaryDatayz = json.loads(data)
-
         try:
-
-            self.CentresDict['yz'] = data['yz']
+            self.CentresDict['yz'] = json.loads(data.data)
 
         except CvBridgeError as e:
             print(e)
 
     def callbackxz(self, data):
 
-        dictionaryDataxz = json.loads(data)
         # change te value of self.joint.data to your estimated value from the images
         # Publish the results
         try:
+            self.CentresDict['xz'] = json.loads(data.data)
 
-            self.CentresDict['xz'] = data['xz']
+            ic = image_converter()
+            ic.matchCoords()
+            ic.anglesPublish()
 
         except CvBridgeError as e:
             print(e)
@@ -68,29 +68,30 @@ class image_converter:
         Angles = im.anglesVis1(self.CentresDict)
         self.joints_pub.publish(Angles)
 
-    def matchCoords(self, centresDict):
-        if self.CentresDict['xz']['Green'] != []:
-            if self.CentresDict['yz']['Green'] != []:
-                self.matchCoords["Green"] = [self.CentresDict['xz']['Green'][0],
-                                             self.CentresDict['yz']['Green'][0], 
-                                             self.CentresDict['yz']['Green'][1]]
-        if self.CentresDict['xz']['Yellow'] != []:
-            if self.CentresDict['yz']['Yellow'] != []:
-                self.matchCoords["Yellow"] = [self.CentresDict['xz']['Yellow'][0],
-                                             self.CentresDict['yz']['Yellow'][0], 
-                                             self.CentresDict['yz']['Yellow'][1]]
-        if self.CentresDict['xz']['Blue'] != []:
-            if self.CentresDict['yz']['Blue'] != []:
-                self.matchCoords["Blue"] = [self.CentresDict['xz']['Blue'][0],
-                                             self.CentresDict['yz']['Blue'][0], 
-                                             self.CentresDict['yz']['Blue'][1]]
+    def matchCoords(self):
+        if (('xz' in self.CentresDict) and ('yz' in self.CentresDict)):
+            if self.CentresDict['xz']['Green'] != []:
+                if self.CentresDict['yz']['Green'] != []:
+                    self.matchCoords["Green"] = [self.CentresDict['xz']['Green'][0],
+                                                self.CentresDict['yz']['Green'][0], 
+                                                self.CentresDict['yz']['Green'][1]]
+            if self.CentresDict['xz']['Yellow'] != []:
+                if self.CentresDict['yz']['Yellow'] != []:
+                    self.matchCoords["Yellow"] = [self.CentresDict['xz']['Yellow'][0],
+                                                self.CentresDict['yz']['Yellow'][0], 
+                                                self.CentresDict['yz']['Yellow'][1]]
+            if self.CentresDict['xz']['Blue'] != []:
+                if self.CentresDict['yz']['Blue'] != []:
+                    self.matchCoords["Blue"] = [self.CentresDict['xz']['Blue'][0],
+                                                self.CentresDict['yz']['Blue'][0], 
+                                                self.CentresDict['yz']['Blue'][1]]
 
-        if self.CentresDict['xz']['Red'] != []:
-            if self.CentresDict['yz']['Red'] != []:
-                self.matchCoords["Green"] = [self.CentresDict['xz']['Red'][0],
-                                             self.CentresDict['yz']['Red'][0], 
-                                             self.CentresDict['yz']['Red'][1]]
-        print(self.matchCoords)
+            if self.CentresDict['xz']['Red'] != []:
+                if self.CentresDict['yz']['Red'] != []:
+                    self.matchCoords["Green"] = [self.CentresDict['xz']['Red'][0],
+                                                self.CentresDict['yz']['Red'][0], 
+                                                self.CentresDict['yz']['Red'][1]]
+        #print(self.matchCoords)
                 # call the class
 
 
@@ -99,8 +100,7 @@ def main(args):
 
     try: 
         rospy.spin()
-        ic.matchCoords()
-        ic.anglesPublish()
+        
 
     except KeyboardInterrupt:
         print("Shutting down")
