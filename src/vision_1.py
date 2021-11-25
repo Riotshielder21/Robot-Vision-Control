@@ -23,7 +23,6 @@ class image_converter:
     def __init__(self):
 
         self.CentresDict = {}
-        self.matchedCoords = {}
 
         # initialize the bridge between openCV and ROS
         self.bridge = CvBridge()
@@ -56,44 +55,67 @@ class image_converter:
         try:
             self.CentresDict['xz'] = json.loads(data.data)
 
-            ic = image_converter()
-            ic.matchCoords()
-            ic.anglesPublish()
+            if (('xz' in self.CentresDict) and ('yz' in self.CentresDict)):
+                ic = image_converter()
+                matched = ic.matchCoords(self.CentresDict)
+                ic.anglesPublish(matched)
 
         except CvBridgeError as e:
             print(e)
 
-    def anglesPublish(self):
+    def anglesPublish(self, matched):
         im = Image_processes()
-        Angles = im.anglesVis1(self.CentresDict)
+        Angles = im.anglesVis1(matched)
         self.joints_pub.publish(Angles)
 
-    def matchCoords(self):
-        if (('xz' in self.CentresDict) and ('yz' in self.CentresDict)):
-            if self.CentresDict['xz']['Green'] != []:
-                if self.CentresDict['yz']['Green'] != []:
-                    self.matchCoords["Green"] = [self.CentresDict['xz']['Green'][0],
-                                                self.CentresDict['yz']['Green'][0], 
-                                                self.CentresDict['yz']['Green'][1]]
-            if self.CentresDict['xz']['Yellow'] != []:
-                if self.CentresDict['yz']['Yellow'] != []:
-                    self.matchCoords["Yellow"] = [self.CentresDict['xz']['Yellow'][0],
-                                                self.CentresDict['yz']['Yellow'][0], 
-                                                self.CentresDict['yz']['Yellow'][1]]
-            if self.CentresDict['xz']['Blue'] != []:
-                if self.CentresDict['yz']['Blue'] != []:
-                    self.matchCoords["Blue"] = [self.CentresDict['xz']['Blue'][0],
-                                                self.CentresDict['yz']['Blue'][0], 
-                                                self.CentresDict['yz']['Blue'][1]]
-
-            if self.CentresDict['xz']['Red'] != []:
-                if self.CentresDict['yz']['Red'] != []:
-                    self.matchCoords["Green"] = [self.CentresDict['xz']['Red'][0],
-                                                self.CentresDict['yz']['Red'][0], 
-                                                self.CentresDict['yz']['Red'][1]]
-        #print(self.matchCoords)
-                # call the class
-
+    def matchCoords(self, centres):
+        print(centres)
+        matchCoords = {}
+        if centres['xz']['Green'] != []:
+            if centres['yz']['Green'] != []:
+                if centres['yz']['Green'][1]:
+                    matchCoords["Green"] = [centres['xz']['Green'][0],
+                                                centres['yz']['Green'][0], 
+                                                centres['yz']['Green'][1]]
+                else:
+                    matchCoords["Green"] = [centres['xz']['Green'][0],
+                                                centres['yz']['Green'][0], 
+                                                centres['xz']['Green'][1]]
+        if centres['xz']['Yellow'] != []:
+            if centres['yz']['Yellow'] != []:
+                if centres['yz']['Yellow'][1]:
+                    matchCoords["Yellow"] = [centres['xz']['Yellow'][0],
+                                                centres['yz']['Yellow'][0], 
+                                                centres['yz']['Yellow'][1]]
+                else:
+                    matchCoords["Yellow"] = [centres['xz']['Yellow'][0],
+                                                centres['yz']['Yellow'][0], 
+                                                centres['xz']['Yellow'][1]]
+                
+        if centres['xz']['Blue'] != []:
+            if centres['yz']['Blue'] != []:
+                if centres['yz']['Blue'][1]:
+                    matchCoords["Blue"] = [centres['xz']['Blue'][0],
+                                                centres['yz']['Blue'][0], 
+                                                centres['yz']['Blue'][1]]
+                else:
+                    matchCoords["Blue"] = [centres['xz']['Blue'][0],
+                                                centres['yz']['Blue'][0], 
+                                                centres['xz']['Blue'][1]]
+        if centres['xz']['Red'] != []:
+            if centres['yz']['Red'] != []:
+                if centres['yz']['Red'][1]:
+                    matchCoords["Red"] = [centres['xz']['Red'][0],
+                                                centres['yz']['Red'][0], 
+                                                centres['yz']['Red'][1]]
+                else:
+                    matchCoords["Red"] = [centres['xz']['Red'][0],
+                                                centres['yz']['Red'][0], 
+                                                centres['xz']['Red'][1]]
+                                
+        #print(matchCoords)
+        return matchCoords
+        
 
 def main(args):
     ic = image_converter()

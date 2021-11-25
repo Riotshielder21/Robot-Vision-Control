@@ -59,23 +59,26 @@ class Image_processes:
     def anglesVis1(self, centres):
         
         # needs to be adjusted to calculate angles for the 3 dimensions
+        #   key      x    y    z
+        #{'Green': [347, 350, 536], 'Yellow': [347, 350, 431], 'Blue': [347, 350, 348], 'Red': [347, 350, 275]}
 
-        if (centres[0][0]-centres[1][0]) != 0:
-                joint2 = np.arctan2((centres[0][1]-centres[0][1])/(centres[0][0]-centres[1][0]))
+        print(centres['Yellow'])
+        if (centres['Yellow'][1]-centres['Blue'][1]) != 0:
+                joint2 = np.arctan2((centres['Yellow'][2]-centres['Blue'][2])/(centres['Yellow'][0]-centres['Blue'][0]))
                 print(joint2)
         else:
                 joint2 = 0
 
         #link 2 angle, yellow to blue     
-        if (centres[1][0]-centres[2][0]) != 0:
-                joint3 = np.arctan2((centres[1][1]-centres[2][1])/(centres[1][0]-centres[2][0]))-joint2
+        if (centres[['Yellow']][0]-centres['Blue'][0]) != 0:
+                joint3 = np.arctan2((centres['Yellow'][2]-centres['Blue'][2])/(centres['Yellow'][1]-centres['Blue'][1]))
                 print(joint3)
         else:
                 joint3 = 0
 
         #link 3 angle, blue to red      
-        if (centres[2][0]-centres[3][0]) != 0:
-                joint4 = np.arctan2((centres[2][1]-centres[3][1])/(centres[2][0]-centres[3][0])) -joint2 - joint3
+        if (centres['Blue'][0]-centres['Red'][0]) != 0:
+                joint4 = np.arctan2((centres['Blue'][2]-centres['Red'][2])/(centres['Blue'][0]-centres['Red'][0])) - joint3
                 print(joint4)
         else:
                 joint4 = 0
