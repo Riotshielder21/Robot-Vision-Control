@@ -65,53 +65,64 @@ class image_converter:
 
     def anglesPublish(self, matched):
         im = Image_processes()
-        Angles = im.anglesVis1(matched)
+        Angles = Float64MultiArray()
+        Angles.data = im.anglesVis1(matched)
         self.joints_pub.publish(Angles)
 
     def matchCoords(self, centres):
-        print(centres)
         matchCoords = {}
-        if centres['xz']['Green'] != []:
-            if centres['yz']['Green'] != []:
+        if 'Green' in centres['xz']:
+            if 'Green' in centres['yz']:
                 if centres['yz']['Green'][1]:
-                    matchCoords["Green"] = [centres['xz']['Green'][0],
-                                                centres['yz']['Green'][0], 
-                                                centres['yz']['Green'][1]]
+                    matchCoords['Green'] = {}
+                    matchCoords["Green"]['x'] = centres['xz']['Green'][0]
+                    matchCoords["Green"]['y'] = centres['yz']['Green'][0]
+                    matchCoords["Green"]['z'] = centres['yz']['Green'][1]
                 else:
-                    matchCoords["Green"] = [centres['xz']['Green'][0],
-                                                centres['yz']['Green'][0], 
-                                                centres['xz']['Green'][1]]
-        if centres['xz']['Yellow'] != []:
-            if centres['yz']['Yellow'] != []:
+                    matchCoords['Green'] = {}
+                    matchCoords["Green"]['x'] = centres['xz']['Green'][0]
+                    matchCoords["Green"]['y'] = centres['yz']['Green'][0]
+                    matchCoords["Green"]['z'] = centres['xz']['Green'][1]
+
+        if 'Yellow' in centres['xz']:
+            if 'Yellow' in centres['yz']:
                 if centres['yz']['Yellow'][1]:
-                    matchCoords["Yellow"] = [centres['xz']['Yellow'][0],
-                                                centres['yz']['Yellow'][0], 
-                                                centres['yz']['Yellow'][1]]
+                    matchCoords['Yellow'] = {}
+                    matchCoords["Yellow"]['x'] = centres['xz']['Yellow'][0]
+                    matchCoords["Yellow"]['y'] = centres['yz']['Yellow'][0]
+                    matchCoords["Yellow"]['z'] = centres['yz']['Yellow'][1]
                 else:
-                    matchCoords["Yellow"] = [centres['xz']['Yellow'][0],
-                                                centres['yz']['Yellow'][0], 
-                                                centres['xz']['Yellow'][1]]
+                    matchCoords['Yellow'] = {}
+                    matchCoords["Yellow"]['x'] = centres['xz']['Yellow'][0]
+                    matchCoords["Yellow"]['y'] = centres['yz']['Yellow'][0]
+                    matchCoords["Yellow"]['z'] = centres['xz']['Yellow'][1]
                 
-        if centres['xz']['Blue'] != []:
-            if centres['yz']['Blue'] != []:
+        if 'Blue' in centres['xz']:
+            if 'Blue' in centres['yz']:
                 if centres['yz']['Blue'][1]:
-                    matchCoords["Blue"] = [centres['xz']['Blue'][0],
-                                                centres['yz']['Blue'][0], 
-                                                centres['yz']['Blue'][1]]
+                    matchCoords['Blue'] = {}
+                    matchCoords["Blue"]['x'] = centres['xz']['Blue'][0]
+                    matchCoords["Blue"]['y'] = centres['yz']['Blue'][0]
+                    matchCoords["Blue"]['z'] = centres['yz']['Blue'][1]
                 else:
-                    matchCoords["Blue"] = [centres['xz']['Blue'][0],
-                                                centres['yz']['Blue'][0], 
-                                                centres['xz']['Blue'][1]]
-        if centres['xz']['Red'] != []:
-            if centres['yz']['Red'] != []:
+                    matchCoords['Blue'] = {}
+                    matchCoords["Blue"]['x'] = centres['xz']['Blue'][0]
+                    matchCoords["Blue"]['y'] = centres['yz']['Blue'][0]
+                    matchCoords["Blue"]['z'] = centres['xz']['Blue'][1]
+
+                    
+        if 'Red' in centres['xz']:
+            if 'Red' in centres['yz']:
                 if centres['yz']['Red'][1]:
-                    matchCoords["Red"] = [centres['xz']['Red'][0],
-                                                centres['yz']['Red'][0], 
-                                                centres['yz']['Red'][1]]
+                    matchCoords['Red'] = {}
+                    matchCoords["Red"]['x'] = centres['xz']['Red'][0]
+                    matchCoords["Red"]['y'] = centres['yz']['Red'][0]
+                    matchCoords["Red"]['z'] = centres['yz']['Red'][1]
                 else:
-                    matchCoords["Red"] = [centres['xz']['Red'][0],
-                                                centres['yz']['Red'][0], 
-                                                centres['xz']['Red'][1]]
+                    matchCoords['Red'] = {}
+                    matchCoords["Red"]['x'] = centres['xz']['Red'][0]
+                    matchCoords["Red"]['y'] = centres['yz']['Red'][0]
+                    matchCoords["Red"]['z'] = centres['xz']['Red'][1]
                                 
         #print(matchCoords)
         return matchCoords
