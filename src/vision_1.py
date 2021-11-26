@@ -34,10 +34,11 @@ class image_converter:
 
         # initialize a publisher to send joints' angular position to a topic called joints_pos
         self.joints_pub = rospy.Publisher(
-            "joint_angles", Float64MultiArray, queue_size=10)
+            "joint_angles", Float64MultiArray, queue_size=1)
 
         # record the beginning time
         self.time_trajectory = rospy.get_time()
+        self.r = rospy.Rate(30)
 
 # --------------------------------------------------------------------------------------------------------------
     def callbackyz(self, data):
@@ -67,27 +68,24 @@ class image_converter:
         im = Image_processes()
         Angles = Float64MultiArray()
         Angles.data = im.anglesVis1(matched)
+        print(Angles.data)
         self.joints_pub.publish(Angles)
+        self.r.sleep()
 
     def matchCoords(self, centres):
         matchCoords = {}
+        matchCoords['Green'] = {}
         if 'Green' in centres['xz']:
             if 'Green' in centres['yz']:
                 if centres['yz']['Green'][1]:
-                    matchCoords['Green'] = {}
                     matchCoords["Green"]['x'] = centres['xz']['Green'][0]
                     matchCoords["Green"]['y'] = centres['yz']['Green'][0]
                     matchCoords["Green"]['z'] = centres['yz']['Green'][1]
-                else:
-                    matchCoords['Green'] = {}
-                    matchCoords["Green"]['x'] = centres['xz']['Green'][0]
-                    matchCoords["Green"]['y'] = centres['yz']['Green'][0]
-                    matchCoords["Green"]['z'] = centres['xz']['Green'][1]
-
+        matchCoords['Yellow'] = {}
         if 'Yellow' in centres['xz']:
             if 'Yellow' in centres['yz']:
                 if centres['yz']['Yellow'][1]:
-                    matchCoords['Yellow'] = {}
+                    
                     matchCoords["Yellow"]['x'] = centres['xz']['Yellow'][0]
                     matchCoords["Yellow"]['y'] = centres['yz']['Yellow'][0]
                     matchCoords["Yellow"]['z'] = centres['yz']['Yellow'][1]
@@ -96,30 +94,28 @@ class image_converter:
                     matchCoords["Yellow"]['x'] = centres['xz']['Yellow'][0]
                     matchCoords["Yellow"]['y'] = centres['yz']['Yellow'][0]
                     matchCoords["Yellow"]['z'] = centres['xz']['Yellow'][1]
-                
+        
+        matchCoords['Blue'] = {}        
         if 'Blue' in centres['xz']:
             if 'Blue' in centres['yz']:
                 if centres['yz']['Blue'][1]:
-                    matchCoords['Blue'] = {}
                     matchCoords["Blue"]['x'] = centres['xz']['Blue'][0]
                     matchCoords["Blue"]['y'] = centres['yz']['Blue'][0]
                     matchCoords["Blue"]['z'] = centres['yz']['Blue'][1]
                 else:
-                    matchCoords['Blue'] = {}
                     matchCoords["Blue"]['x'] = centres['xz']['Blue'][0]
                     matchCoords["Blue"]['y'] = centres['yz']['Blue'][0]
                     matchCoords["Blue"]['z'] = centres['xz']['Blue'][1]
 
-                    
+        
+        matchCoords['Red'] = {}            
         if 'Red' in centres['xz']:
             if 'Red' in centres['yz']:
                 if centres['yz']['Red'][1]:
-                    matchCoords['Red'] = {}
                     matchCoords["Red"]['x'] = centres['xz']['Red'][0]
                     matchCoords["Red"]['y'] = centres['yz']['Red'][0]
                     matchCoords["Red"]['z'] = centres['yz']['Red'][1]
                 else:
-                    matchCoords['Red'] = {}
                     matchCoords["Red"]['x'] = centres['xz']['Red'][0]
                     matchCoords["Red"]['y'] = centres['yz']['Red'][0]
                     matchCoords["Red"]['z'] = centres['xz']['Red'][1]

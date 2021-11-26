@@ -27,6 +27,7 @@ class image_converter:
     self.image_sub2 = rospy.Subscriber("/camera2/robot/image_raw",Image,self.callback2)
     # initialize the bridge between openCV and ROS
     self.bridge = CvBridge()
+    self.r = rospy.Rate(30)
 
 
   # Recieve data, process it, and publish
@@ -51,6 +52,7 @@ class image_converter:
     # Publish the results
     try: 
       self.imxz.publish(json.dumps(xzCentres))
+      self.r.sleep()
     except CvBridgeError as e:
       print(e)
 
