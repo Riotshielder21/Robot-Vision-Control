@@ -56,41 +56,54 @@ class Image_processes:
         
 #----------------------------------------------------------------------------------------------------------        
  
-#link 1 angle, green to yellow
-    def angles(self, centres):
+    def anglesVis1(self, centres):
         
-# 
-# 
-# 
         # needs to be adjusted to calculate angles for the 3 dimensions
-# 
-# 
-# 
-# 
-
-
-
-        if (centres[0][0]-centres[1][0]) != 0:
-                joint2 = np.arctan2((centres[0][1]-centres[0][1])/(centres[0][0]-centres[1][0]))
-                print(joint2)
+        #   key      x    y    z
+        #{'Green': {347, 350, 536}, 'Yellow': [347, 350, 431], 'Blue': [347, 350, 348], 'Red': [347, 350, 275]}
+        if centres['Yellow'] == {}:
+                joint2 = -1.57
         else:
-                joint2 = 0
+                if ('z' in centres ['Yellow'] and 'z' in centres['Blue']):
+                        if (centres['Yellow']['x']-centres['Blue']['x']) >= 1  or (centres['Yellow']['x']-centres['Blue']['x']) <= -1:
+                                joint2 = np.arctan2((centres['Yellow']['x']-centres['Blue']['x']), (centres['Yellow']['z']-centres['Blue']['z']))                     
+                                #print(joint2)
+                        else:
+                                joint2 = 0
+                                #print(joint2)
 
-        #link 2 angle, yellow to blue     
-        if (centres[1][0]-centres[2][0]) != 0:
-                joint3 = np.arctan2((centres[1][1]-centres[2][1])/(centres[1][0]-centres[2][0]))-joint2
-                print(joint3)
+        #link 2 angle, yellow to blue
+        if centres['Blue'] == {}:
+                joint3 = -1.57
+        elif centres['Blue']['y'] == -1 or centres['Blue']['z'] == -1:
+                joint3 = -1.57
         else:
-                joint3 = 0
+                if ('z' in centres ['Yellow'] and 'z' in centres['Blue']):   
+                        if (centres['Yellow']['y']-centres['Blue']['y'])  >= 1 or (centres['Yellow']['y']-centres['Blue']['y']) <= -1:
+                                joint3 = np.arctan2((centres['Yellow']['y']-centres['Blue']['y']),(centres['Yellow']['z']-centres['Blue']['z'])) - joint2
+                                #print(joint3)
+                        else:
+                                joint3 = 0
+                                #print(joint3)
 
-        #link 3 angle, blue to red      
-        if (centres[2][0]-centres[3][0]) != 0:
-                joint4 = np.arctan2((centres[2][1]-centres[3][1])/(centres[2][0]-centres[3][0])) -joint2 - joint3
-                print(joint4)
+        #link 3 angle, blue to red 
+        if centres['Blue'] == {} or centres['Red'] == {}:
+                joint4 = -1.57
+        elif centres['Blue']['z'] == -1 or centres['Blue']['x'] == -1 or centres['Red']['z'] == -1 or centres['Red']['x'] == -1:
+                joint4 = -1.57
         else:
-                joint4 = 0
+                if ('z' in centres ['Blue'] and 'z' in centres['Red']):    
+                        if (centres['Blue']['x']-centres['Red']['x'])  >= 1 or (centres['Blue']['x']-centres['Red']['x']) <= -1:
+                                joint4 = np.arctan2((centres['Blue']['x']-centres['Red']['x']),(centres['Blue']['z']-centres['Red']['z'])) - joint3
+                                #print(joint4)
+                        else:
+                                joint4 = 0
+                                #print(joint4)
 
-        return np.array[joint2, joint3, joint4]
+        return np.array([0, joint2, joint3, joint4])
+
+    def anglesVis2(self, centres):
+            return 0
 
 #----------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------       
@@ -139,9 +152,11 @@ class Image_processes:
         Bcontours, hierarchy = cv2.findContours(Rjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
         contourDic = {"Green": Gcontours,"Yellow": Ycontours,"Blue": Rcontours,"Red": Bcontours}
-        # im_copy = image.copy()
-        # cv2.drawContours(im_copy, contours, -1, (255, 255, 255), 2, cv2.LINE_AA)
-        # cv2.imshow('Contoured', im_copy)
+
+        #im_copy = image.copy()
+        #cv2.drawContours(im_copy, Gcontours, -1, (255, 255, 255), 2, cv2.LINE_AA)
+        #cv2.imshow('Contoured', im_copy)
+        #cv2.waitKey(10000)
 
         return contourDic
 

@@ -22,11 +22,12 @@ class image_converter:
     # initialize the node named image_processing
     rospy.init_node('image_processing', anonymous=True)
     # initialize a publisher to send xz coordinates
-    self.imyz = rospy.Publisher("Coords", String ,queue_size = 1)
+    self.imyz = rospy.Publisher("yzCoords", String ,queue_size = 1)
     # initialize a subscriber to recieve messages rom a topic named /robot/camera1/image_raw and use callback function to recieve data
     self.image_sub1 = rospy.Subscriber("/camera1/robot/image_raw",Image,self.callback1)
     # initialize the bridge between openCV and ROS
     self.bridge = CvBridge()
+    self.r = rospy.Rate(30)
 
 
   # Recieve data from camera 1, process it, and publish
@@ -51,6 +52,7 @@ class image_converter:
     # Publish the results
     try: 
       self.imyz.publish(json.dumps(yzCentres))
+      self.r.sleep()
     except CvBridgeError as e:
       print(e)
 
