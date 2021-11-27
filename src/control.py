@@ -113,7 +113,7 @@ class image_converter:
         # [0,0,1,2.8],
         # [0,0,0,1]])
 
-        
+
         #Rot Z
         frame1 = np.array(
         [[math.cos(a1),-math.sin(a1),0,0],
@@ -132,7 +132,7 @@ class image_converter:
         [0,1,0,0],
         [-math.sin(a3),0,math.cos(a3),2.8],
         [0,0,0,1]])
-        end = frame2@frame1
+        end = frame3@frame2@frame1
         translation = self.frame_to_pos(end)
         rotation = self.frame_to_rot(end)
         print(translation)
