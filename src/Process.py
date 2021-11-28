@@ -195,27 +195,24 @@ class Image_processes:
                                 if out > 0:
                                         matchCoords[colour][axis] = round(out/10)*10
 
-                matchCoords['Yellow'] = {}
                 if centres['xz']['Yellow']['y'] == -1:
-                        matchCoords["Yellow"]['z'] = round(centres['yz']['Yellow']['y']/10)*10
+                        matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
                 else:
-                        matchCoords["Yellow"]['z'] = round(centres['xz']['Yellow']['y']/10)*10
-                
-                matchCoords['Blue'] = {}      
+                        matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
+                   
                 if centres['xz']['Blue']['y'] == -1: 
-                        matchCoords["Blue"]['z'] = round(centres['yz']['Blue']['y']/10)*10
+                        matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
                 else:
-                        matchCoords["Blue"]['z'] = round(centres['xz']['Blue']['y']/10)*10
+                        matchCoords["Blue"]['z'] = centres['xz']['Blue']['y']
                 if  matchCoords["Blue"]['y'] == -1: 
                         matchCoords["Blue"]['y'] =  matchCoords["Yellow"]['y']
                 if  matchCoords["Blue"]['x'] == -1: 
                         matchCoords["Blue"]['x'] =  matchCoords["Yellow"]['x']
-        
-                matchCoords['Red'] = {}            
+                 
                 if centres['xz']['Red']['y'] == -1:
-                        matchCoords["Red"]['z'] = round(centres['yz']['Red']['y']/10)*10
+                        matchCoords["Red"]['z'] = centres['yz']['Red']['y']
                 else:
-                        matchCoords["Red"]['z'] = round(centres['xz']['Red']['y']/10)*10
+                        matchCoords["Red"]['z'] = centres['xz']['Red']['y']
 
                 if matchCoords["Red"]['x'] == -1:
                         matchCoords["Red"]['x'] = matchCoords["Blue"]['x']
