@@ -59,6 +59,7 @@ class Image_processes:
         def anglesVis1(self, centres):
                 
                 #joint3 first as it affects the joint2 position if set
+                #link 3 angle, yellow yo blue 
                 if (centres['Yellow']['z']-centres['Blue']['z']) !=0:
                         joint3 = np.pi/2 - np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Yellow']['y']-centres['Blue']['y']))
                         #print(joint3)
@@ -69,37 +70,36 @@ class Image_processes:
                         joint3 = joint3 - np.pi
                 if joint3 < -1.5707:
                         joint3 = joint3 + np.pi
-                #link 3 angle, blue to red 
-                #print("z diff: "+str(centres['Blue']['z']-centres['Red']['z'])) 
-
-                if joint3 > 0.1:
+                
+                #link2 angle, Yellow to blue
+                if joint3 > 0:
                         if (centres['Yellow']['z']-centres['Red']['z']) != 0:
                                 if (centres['Yellow']['x']-centres['Red']['x'])>0:
-                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))                
-                                        #print(joint2)
+                                        joint2 = -np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))               
+                                        print("joint3>0 and red to left of yellow xz\n\n")
                                 else:
-                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Red']['x']-centres['Yellow']['x']))               
-                                        #print(joint2)
+                                        joint2 = -np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Red']['x']-centres['Yellow']['x']))               
+                                        print("joint3>0 and red to right of yellow xz\n\n")
                         else:
                                 joint2 = 0
-                elif joint3 < 0.1:
+                elif joint3 < 0:
                         if (centres['Yellow']['z']-centres['Red']['z']) != 0:
                                 if (centres['Yellow']['x']-centres['Red']['x'])>0:
                                         joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))                
-                                        #print(joint2)
+                                        print("joint3<0 and red to right of yellow xz\n\n")
                                 else:
-                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))               
-                                        #print(joint2)
+                                        joint2 = -np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))               
+                                        print("joint3<0 and red to right of yellow xz\n\n")
                         else: 
                                 joint2 = 0
 
                 else:
-                        if (centres['Yellow']['z']-centres['Blue']['z']) >= 10 or (centres['Yellow']['z']-centres['Blue']['z']) <= -10:
+                        if (centres['Yellow']['z']-centres['Blue']['z']) !=0:
                                 joint2 = np.pi/2 + np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Blue']['x']-centres['Yellow']['x']))                
-                                #print(joint2)
+                                print("joint 3 = 0\n\n")
                         else:
                                 joint2 = 0
-                                #print(joint2)
+                                print("joint 3 = 0 and z diff = 0\n\n")
                 if joint2 > 1.5707:
                         joint2 = joint2 - np.pi
                 if joint2 < -1.5707:
@@ -137,14 +137,11 @@ class Image_processes:
                 blue_l = (50,0,0)
                 red_u = (20,20,256)
                 red_l = (0,0,50)
-                yellow_u = (20,256,256)
-                yellow_l = (0,100,100)
+                yellow_u = (0,256,256)
+                yellow_l = (0,70,70)
                 climits = [[green_l,green_u],[yellow_l,yellow_u],[blue_l,blue_u],[red_l,red_u]]
                 
                 masks = [ cv2.inRange(image, climit[0], climit[1]) for climit in climits]
-                low = (20, 100, 100)
-                up = (30, 255, 255)
-                masks[1] = cv2.inRange(cv2.cvtColor(image,cv2.COLOR_BGR2HSV), low, up) #Hack to get yellow more reliable
                 maskJs = [cv2.cvtColor(mask,cv2.COLOR_BGR2RGB) for mask in masks]
               
                 frames = [(image&maskJ) for maskJ in maskJs]
