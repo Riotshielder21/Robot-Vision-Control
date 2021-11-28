@@ -73,38 +73,41 @@ class image_converter:
         self.r.sleep()
 
     def matchCoords(self, centres):
+
+        # the yz coordinates are still labeled as x and y due to function reusability but x = y and y = z in the yz case
+
         matchCoords = {}
         matchCoords['Green'] = {}
         if 'Green' in centres['xz']:
             if 'Green' in centres['yz']:
-                matchCoords["Green"]['x'] = centres['xz']['Green'][0]
-                matchCoords["Green"]['y'] = centres['yz']['Green'][0]
-                matchCoords["Green"]['z'] = centres['yz']['Green'][1]
+                matchCoords["Green"]['x'] = centres['xz']['Green']['x']
+                matchCoords["Green"]['y'] = centres['yz']['Green']['x']
+                matchCoords["Green"]['z'] = centres['yz']['Green']['y']
         matchCoords['Yellow'] = {}
         if 'Yellow' in centres['xz']:
             if 'Yellow' in centres['yz']:                    
-                matchCoords["Yellow"]['x'] = centres['xz']['Yellow'][0]
-                matchCoords["Yellow"]['y'] = centres['yz']['Yellow'][0]
-                matchCoords["Yellow"]['z'] = centres['yz']['Yellow'][1]
+                matchCoords["Yellow"]['x'] = centres['xz']['Yellow']['x']
+                matchCoords["Yellow"]['y'] = centres['yz']['Yellow']['x']
+                matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
             else:
-                matchCoords["Yellow"]['x'] = centres['xz']['Yellow'][0]
+                matchCoords["Yellow"]['x'] = centres['xz']['Yellow']['x']
                 matchCoords["Yellow"]['y'] = -1
-                matchCoords["Yellow"]['z'] = centres['xz']['Yellow'][1]
+                matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
         
         matchCoords['Blue'] = {}        
         if 'Blue' in centres['xz']:
             if 'Blue' in centres['yz']:
-                matchCoords["Blue"]['x'] = centres['xz']['Blue'][0]
-                matchCoords["Blue"]['y'] = centres['yz']['Blue'][0]
-                matchCoords["Blue"]['z'] = centres['yz']['Blue'][1]
+                matchCoords["Blue"]['x'] = centres['xz']['Blue']['x']
+                matchCoords["Blue"]['y'] = centres['yz']['Blue']['x']
+                matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
             else:
-                matchCoords["Blue"]['x'] = centres['xz']['Blue'][0]
+                matchCoords["Blue"]['x'] = centres['xz']['Blue']['x']
                 matchCoords["Blue"]['y'] = -1
-                matchCoords["Blue"]['z'] = centres['xz']['Blue'][1]
+                matchCoords["Blue"]['z'] = centres['xz']['Blue']['y']
         elif 'Blue' in centres['yz']:
             matchCoords["Blue"]['x'] = -1
-            matchCoords["Blue"]['y'] = centres['yz']['Blue'][0]
-            matchCoords["Blue"]['z'] = centres['yz']['Blue'][1]
+            matchCoords["Blue"]['y'] = centres['yz']['Blue']['x']
+            matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
         else:
             matchCoords["Blue"]['x'] = -1
             matchCoords["Blue"]['y'] = -1
@@ -114,17 +117,17 @@ class image_converter:
         matchCoords['Red'] = {}            
         if 'Red' in centres['xz']:
             if 'Red' in centres['yz']:
-                matchCoords["Red"]['x'] = centres['xz']['Red'][0]
-                matchCoords["Red"]['y'] = centres['yz']['Red'][0]
-                matchCoords["Red"]['z'] = centres['yz']['Red'][1]
+                matchCoords["Red"]['x'] = centres['xz']['Red']['x']
+                matchCoords["Red"]['y'] = centres['yz']['Red']['x']
+                matchCoords["Red"]['z'] = centres['yz']['Red']['y']
             else:
-                matchCoords["Red"]['x'] = centres['xz']['Red'][0]
+                matchCoords["Red"]['x'] = centres['xz']['Red']['x']
                 matchCoords["Red"]['y'] = -1
-                matchCoords["Red"]['z'] = centres['xz']['Red'][1]
+                matchCoords["Red"]['z'] = centres['xz']['Red']['y']
         elif 'Red' in centres['yz']:
             matchCoords["Red"]['x'] = -1
-            matchCoords["Red"]['y'] = centres['yz']['Red'][0]
-            matchCoords["Red"]['z'] = centres['yz']['Red'][1]
+            matchCoords["Red"]['y'] = centres['yz']['Red']['x']
+            matchCoords["Red"]['z'] = centres['yz']['Red']['y']
         else:
             matchCoords["Red"]['x'] = -1
             matchCoords["Red"]['y'] = -1

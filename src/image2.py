@@ -39,8 +39,7 @@ class image_converter:
     except CvBridgeError as e:
       print(e)
 
-    xzcontours = imageprocessor2.imProcess(self.cv_image2)
-    xzCentres = imageprocessor2.Contours(xzcontours)
+    # xzCentres = imageprocessor2.Contours(xzcontours)
 
     # image_copy = self.cv_image2.copy()
     # for c in xzCentres:
@@ -51,6 +50,7 @@ class image_converter:
 
     # Publish the results
     try: 
+      xzCentres = imageprocessor2.imProcess(self.cv_image2)
       self.imxz.publish(json.dumps(xzCentres))
       self.r.sleep()
     except CvBridgeError as e:
