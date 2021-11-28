@@ -35,38 +35,26 @@ class image_converter:
         #print("Sending")
         self.showimg()
         rate.sleep()
+
   def showimg(self):
           # yzCentres = imageprocessor1.Contours(yzcontours)
     if self.xzCentres is None or self.cv_image2 is None:
       return
-    image_copy = self.cv_image2.copy()
-    for c in self.xzCentres:
-      print(self.xzCentres[c]['x'])
-      cv2.circle(image_copy, (int(self.xzCentres[c]['x']), int(self.xzCentres[c]['y'])), 2, (255, 255, 255), -1)
-      cv2.putText(image_copy, c, (int(self.xzCentres[c]['x']) - 25, int(self.xzCentres[c]['y']) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-    cv2.imshow("Image 2",image_copy)
+  
+    cv2.imshow("Image 2",self.cv_image2)
     cv2.waitKey(1)
+    
   # Recieve data, process it, and publish
   def callback2(self,data):
     # Recieve the image
     try:
       imageprocessor2 = Image_processes()
-      self.cv_image2 = self.bridge.imgmsg_to_cv2(data, "bgr8")
+      cv_image2_ps = self.bridge.imgmsg_to_cv2(data, "bgr8")
     except CvBridgeError as e:
       print(e)
 
-    # xzCentres = imageprocessor2.Contours(xzcontours)
-
-    # image_copy = self.cv_image2.copy()
-    # for c in xzCentres:
-    #     cv2.circle(image_copy, (c[0], c[1]), 2, (255, 255, 255), -1)
-    #     cv2.putText(image_copy, "centroid", (c[0] - 25, c[1] - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-    # cv2.imshow("Centriods",image_copy)
-    # cv2.waitKey(1)
-
-    # Publish the results
     try: 
-      xzCentres = imageprocessor2.imProcess(self.cv_image2)
+      xzCentres,self.cv_image2 = imageprocessor2.imProcess(cv_image2_ps)
       self.xzCentres = xzCentres
       self.imxz.publish(json.dumps(xzCentres))
     except CvBridgeError as e:
