@@ -63,29 +63,29 @@ class Image_processes:
                 #{'Green': {347, 350, 536}, 'Yellow': [347, 350, 431], 'Blue': [347, 350, 348], 'Red': [347, 350, 275]}
                 #print("x diff: "+str(centres['Yellow']['x']-centres['Blue']['x']))
                 if (centres['Yellow']['z']-centres['Blue']['z']) != 0:
-                        joint2 = np.arctan2((centres['Yellow']['z']-centres['Blue']['z']),(centres['Yellow']['x']-centres['Blue']['x']))                   
+                        joint2 = np.pi/2-np.arctan2((centres['Yellow']['z']-centres['Blue']['z']),(centres['Yellow']['x']-centres['Blue']['x']))                   
                         #print(joint2)
                 else:
-                        joint2 = 1.57
+                        joint2 = 0
                         #print(joint2)
 
                 #link 2 angle, yellow to blue
                 #print("z diff: "+str(centres['Yellow']['z']-centres['Blue']['z']))
      
                 if (centres['Yellow']['z']-centres['Blue']['z']) !=0:
-                        joint3 = np.arctan2((centres['Yellow']['z']-centres['Blue']['z']),(centres['Yellow']['y']-centres['Blue']['y']))
+                        joint3 = np.pi/2-np.arctan2((centres['Yellow']['z']-centres['Blue']['z']),(centres['Yellow']['y']-centres['Blue']['y']))
                         #print(joint3)
                 else:
-                        joint3 = 1.57
+                        joint3 = 1.4
                         #print(joint3)
 
                 #link 3 angle, blue to red 
                 #print("z diff: "+str(centres['Blue']['z']-centres['Red']['z'])) 
                 if (centres['Blue']['z']-centres['Red']['z']) !=0:
-                        joint4 = np.arctan2((centres['Blue']['z']-centres['Red']['z']),(centres['Blue']['x']-centres['Red']['x'])) -  joint2
+                        joint4 = np.pi/2-np.arctan2((centres['Blue']['z']-centres['Red']['z']),(centres['Blue']['x']-centres['Red']['x'])) -  joint2
                         #print(joint4)
                 else:
-                        joint4 = 1.57
+                        joint4 = 0
                         #print(joint4)
                         
                 print(centres)
@@ -195,12 +195,12 @@ class Image_processes:
                 
                 matchCoords['Blue'] = {}      
                 if centres['xz']['Blue']['y'] == -1: 
-                        matchCoords["Blue"]['x'] = -1
+                        matchCoords["Blue"]['x'] = round(centres['xz']['Blue']['x']/10)*10
                         matchCoords["Blue"]['y'] = round(centres['yz']['Blue']['x']/10)*10
                         matchCoords["Blue"]['z'] = round(centres['yz']['Blue']['y']/10)*10
                 else:
                         matchCoords["Blue"]['x'] = round(centres['xz']['Blue']['x']/10)*10
-                        matchCoords["Blue"]['y'] = -1
+                        matchCoords["Blue"]['y'] = round(centres['yz']['Blue']['x']/10)*10
                         matchCoords["Blue"]['z'] = round(centres['xz']['Blue']['y']/10)*10
                 if  matchCoords["Blue"]['y'] == -1: 
                         matchCoords["Blue"]['y'] =  matchCoords["Yellow"]['y']
@@ -209,12 +209,12 @@ class Image_processes:
         
                 matchCoords['Red'] = {}            
                 if centres['xz']['Red']['y'] == -1: 
-                        matchCoords["Red"]['x'] = -1
+                        matchCoords["Red"]['x'] = round(centres['xz']['Red']['x']/10)*10
                         matchCoords["Red"]['y'] = round(centres['yz']['Red']['x']/10)*10
                         matchCoords["Red"]['z'] = round(centres['yz']['Red']['y']/10)*10
                 else:
                         matchCoords["Red"]['x'] = round(centres['xz']['Red']['x']/10)*10
-                        matchCoords["Red"]['y'] = -1
+                        matchCoords["Red"]['y'] = round(centres['yz']['Red']['x']/10)*10
                         matchCoords["Red"]['z'] = round(centres['xz']['Red']['y']/10)*10
 
                 if matchCoords["Red"]['x'] == -1:
