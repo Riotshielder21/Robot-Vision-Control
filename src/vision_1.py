@@ -67,7 +67,7 @@ class image_converter:
             #print("Both Joints found")
             im = Image_processes()
             matched = im.matchCoords(coords)
-            print(matched)
+            #print(matched)
             Angles = Float64MultiArray()
             Angles.data = im.anglesVis1(matched)
             print(Angles.data)

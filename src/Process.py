@@ -58,39 +58,69 @@ class Image_processes:
  
         def anglesVis1(self, centres):
                 
-                # needs to be adjusted to calculate angles for the 3 dimensions
-                #   key      x    y    z
-                #{'Green': {347, 350, 536}, 'Yellow': [347, 350, 431], 'Blue': [347, 350, 348], 'Red': [347, 350, 275]}
-                print("x diff: "+str(centres['Yellow']['x']-centres['Blue']['x']))
-                print("x diff: "+str(centres['Yellow']['z']-centres['Blue']['z']))
-                if (centres['Yellow']['z']-centres['Blue']['z']) != 0:
-                        joint2 = -(np.pi/2 + np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Blue']['x'])))                  
-                        #print(joint2)
-                else:
-                        joint2 = 0
-                        #print(joint2)
-
-                #link 2 angle, yellow to blue
-                #print("z diff: "+str(centres['Yellow']['z']-centres['Blue']['z']))
-     
+                #joint3 first as it affects the joint2 position if set
                 if (centres['Yellow']['z']-centres['Blue']['z']) !=0:
-                        joint3 = (np.pi/2 + np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Yellow']['y']-centres['Blue']['y'])))
+                        joint3 = np.pi/2 - np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Yellow']['y']-centres['Blue']['y']))
                         #print(joint3)
                 else:
                         joint3 = 1.4
                         #print(joint3)
-
+                if joint3 > 1.5707:
+                        joint3 = joint3 - np.pi
+                if joint3 < -1.5707:
+                        joint3 = joint3 + np.pi
                 #link 3 angle, blue to red 
                 #print("z diff: "+str(centres['Blue']['z']-centres['Red']['z'])) 
+
+                if joint3 > 0:
+                        if (centres['Yellow']['z']-centres['Red']['z']) != 0:
+                                if (centres['Yellow']['x']-centres['Red']['x'])>0:
+                                        joint2 = np.pi/2 + np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))                
+                                        #print(joint2)
+                                else:
+                                        joint2 = np.pi/2 + np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Red']['x']-centres['Yellow']['x']))               
+                                        #print(joint2)
+                        else:
+                                joint2 = 0
+                elif joint3 < 0:
+                        if (centres['Yellow']['z']-centres['Red']['z']) != 0:
+                                if (centres['Yellow']['x']-centres['Red']['x'])>0:
+                                        joint2 = np.pi/2 + np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Red']['x']-centres['Yellow']['x']))                
+                                        #print(joint2)
+                                else:
+                                        joint2 = np.pi/2 + np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))               
+                                        #print(joint2)
+                        else: 
+                                joint2 = 0
+
+                else:
+                        if (centres['Yellow']['z']-centres['Blue']['z']) >= 10 or (centres['Yellow']['z']-centres['Blue']['z']) <= -10:
+                                joint2 = np.pi/2 + np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Blue']['x']-centres['Yellow']['x']))                
+                                #print(joint2)
+                        else:
+                                joint2 = 0
+                                #print(joint2)
+                        if joint2 > 1.5707:
+                                joint2 = joint2 - np.pi
+                        if joint2 < -1.5707:
+                                joint2 = joint2 + np.pi
+                #link 2 angle, yellow to blue
+                #print("z diff: "+str(centres['Yellow']['z']-centres['Blue']['z']))
+
                 if (centres['Blue']['z']-centres['Red']['z']) !=0:
-                        joint4 = -(np.pi/2 + np.arctan2((centres['Red']['z']-centres['Blue']['z']),(centres['Blue']['x']-centres['Red']['x']))) -  joint2
+        
+                        joint4 =np.pi/2 + np.arctan2((centres['Red']['z']-centres['Blue']['z']),(centres['Red']['x']-centres['Blue']['x'])) - joint2
                         #print(joint4)
                 else:
                         joint4 = 0
                         #print(joint4)
-                        
-                print(centres)
-                return np.array([0, joint2, joint3, joint4])
+                if joint4 > 1.5707:
+                        joint4 = joint4 - np.pi
+                if joint4 < -1.5707:
+                        joint4 = joint4 + np.pi
+
+                #print(centres)
+                return np.array([0, round(joint2,2), round(joint3,2), round(joint4,2)])
 
         def anglesVis2(self, centres):
                 return 0
@@ -108,7 +138,7 @@ class Image_processes:
                 red_u = (20,20,256)
                 red_l = (0,0,50)
                 yellow_u = (20,256,256)
-                yellow_l = (0,50,50)
+                yellow_l = (0,100,100)
                 climits = [[green_l,green_u],[yellow_l,yellow_u],[blue_l,blue_u],[red_l,red_u]]
                 
                 masks = [ cv2.inRange(image, climit[0], climit[1]) for climit in climits]
@@ -150,6 +180,7 @@ class Image_processes:
                         cv2.circle(im_copy, (int(cords[i][0]), int(cords[i][1])), 2, (255, 255, 255), -1)
                         cv2.putText(im_copy, list(contourDic.keys())[i], (int(cords[i][0]) - 50, int(cords[i][1]) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
                         cv2.circle(im_copy,(int(cords[i][0]), int(cords[i][1])),int(radiuslist[i]),(0,255,0),1)
+                       
 
 
                 return contourDic, im_copy
@@ -193,10 +224,10 @@ class Image_processes:
                                 else:
                                         out = np.max([cord1, cord2])
                                 if out > 0:
-                                        matchCoords[colour][axis] = round(out/10)*10
+                                        matchCoords[colour][axis] = out
                                 else:
                                         matchCoords[colour][axis] = -1
-                                        print("Warning missing data")
+                                        #print("Warning missing data")
 
                 if centres['xz']['Yellow']['y'] == -1:
                         matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
