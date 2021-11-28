@@ -144,21 +144,12 @@ class Image_processes:
                 
                 im_copy = image.copy()
                 
-                # for c in contourDic:
-                # # print(self.yzCentres[c]['x'])
-                #         cv2.circle(im_copy, (int(contourDic[c]['x']), int(contourDic[c]['y'])), 2, (255, 255, 255), -1)
-                #         cv2.putText(im_copy, c, (int(contourDic[c]['x']) - 25, int(contourDic[c]['y']) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-                # print(list(contourDic.keys())[0])
+
                 for i in range(len(cords)):
                         cv2.circle(im_copy, (int(cords[i][0]), int(cords[i][1])), 2, (255, 255, 255), -1)
-                        cv2.putText(im_copy, list(contourDic.keys())[i], (int(cords[i][0]) - 25, int(cords[i][1]) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+                        cv2.putText(im_copy, list(contourDic.keys())[i], (int(cords[i][0]) - 50, int(cords[i][1]) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
                         cv2.circle(im_copy,(int(cords[i][0]), int(cords[i][1])),int(radiuslist[i]),(0,255,0),1)
-                # Bcontour = self.mergeContors(Bcontour)
-                # cv2.drawContours(im_copy, [Bcontour], -1, (0, 255, 0), 1, cv2.LINE_AA)
-                # #cv2.circle(im_copy,(Gx,Gy),Gradius,(0,255,0),2)
-                # #cv2.drawContours(im_copy, Gcontour, -1, (255, 255, 255), 2, cv2.LINE_AA)
-                # # cv2.imshow('Contoured', im_copy)
-                # # cv2.waitKey(1)
+
 
                 return contourDic, im_copy
         def mergeContors(self, ctrs):
