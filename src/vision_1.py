@@ -39,7 +39,7 @@ class image_converter:
         # record the beginning time
         self.time_trajectory = rospy.get_time()
         while not rospy.is_shutdown():
-            print("Sending")
+            #print("Sending")
             self.anglesPublish(self.CentresDict)
             rate.sleep()
 
@@ -64,7 +64,7 @@ class image_converter:
 
     def anglesPublish(self, coords):
         if 'xz' in self.CentresDict and 'yz' in self.CentresDict:
-            print("Both Joints found")
+            #print("Both Joints found")
             im = Image_processes()
             matched = im.matchCoords(coords)
             print(matched)
@@ -73,18 +73,17 @@ class image_converter:
             print(Angles.data)
             self.joints_pub.publish(Angles)
         
-def calculate(self):
-    ic = image_converter()
-    if (('xz' in self.CentresDict) and ('yz' in self.CentresDict)):
-        ic.anglesPublish(self.CentresDict)
-    
+    def calculate(self):
+        ic = image_converter()
+        if (('xz' in self.CentresDict) and ('yz' in self.CentresDict)):
+            ic.anglesPublish(self.CentresDict)
+        
 
 def main(args):
     ic = image_converter()
 
     try: 
         rospy.spin()
-        
 
     except KeyboardInterrupt:
         print("Shutting down")
