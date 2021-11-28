@@ -61,9 +61,10 @@ class Image_processes:
                 # needs to be adjusted to calculate angles for the 3 dimensions
                 #   key      x    y    z
                 #{'Green': {347, 350, 536}, 'Yellow': [347, 350, 431], 'Blue': [347, 350, 348], 'Red': [347, 350, 275]}
-                #print("x diff: "+str(centres['Yellow']['x']-centres['Blue']['x']))
+                print("x diff: "+str(centres['Yellow']['x']-centres['Blue']['x']))
+                print("x diff: "+str(centres['Yellow']['z']-centres['Blue']['z']))
                 if (centres['Yellow']['z']-centres['Blue']['z']) != 0:
-                        joint2 = np.pi/2-np.arctan2((centres['Yellow']['z']-centres['Blue']['z']),(centres['Yellow']['x']-centres['Blue']['x']))                   
+                        joint2 = -(np.pi/2 + np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Blue']['x'])))                  
                         #print(joint2)
                 else:
                         joint2 = 0
@@ -73,7 +74,7 @@ class Image_processes:
                 #print("z diff: "+str(centres['Yellow']['z']-centres['Blue']['z']))
      
                 if (centres['Yellow']['z']-centres['Blue']['z']) !=0:
-                        joint3 = np.pi/2-np.arctan2((centres['Yellow']['z']-centres['Blue']['z']),(centres['Yellow']['y']-centres['Blue']['y']))
+                        joint3 = (np.pi/2 + np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Yellow']['y']-centres['Blue']['y'])))
                         #print(joint3)
                 else:
                         joint3 = 1.4
@@ -82,7 +83,7 @@ class Image_processes:
                 #link 3 angle, blue to red 
                 #print("z diff: "+str(centres['Blue']['z']-centres['Red']['z'])) 
                 if (centres['Blue']['z']-centres['Red']['z']) !=0:
-                        joint4 = np.pi/2-np.arctan2((centres['Blue']['z']-centres['Red']['z']),(centres['Blue']['x']-centres['Red']['x'])) -  joint2
+                        joint4 = -(np.pi/2 + np.arctan2((centres['Red']['z']-centres['Blue']['z']),(centres['Blue']['x']-centres['Red']['x']))) -  joint2
                         #print(joint4)
                 else:
                         joint4 = 0
@@ -194,6 +195,7 @@ class Image_processes:
                                 if out > 0:
                                         matchCoords[colour][axis] = round(out/10)*10
                                 else:
+                                        matchCoords[colour][axis] = -1
                                         print("Warning missing data")
 
                 if centres['xz']['Yellow']['y'] == -1:
@@ -201,6 +203,7 @@ class Image_processes:
                 else:
                         matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
                    
+
                 if centres['xz']['Blue']['y'] == -1: 
                         matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
                 else:
@@ -209,6 +212,7 @@ class Image_processes:
                         matchCoords["Blue"]['y'] =  matchCoords["Yellow"]['y']
                 if  matchCoords["Blue"]['x'] == -1: 
                         matchCoords["Blue"]['x'] =  matchCoords["Yellow"]['x']
+                 
                  
                 if centres['xz']['Red']['y'] == -1:
                         matchCoords["Red"]['z'] = centres['yz']['Red']['y']
