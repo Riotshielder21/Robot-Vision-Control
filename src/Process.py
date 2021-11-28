@@ -140,39 +140,77 @@ class Image_processes:
                 Rcontour, hierarchy = cv2.findContours(Rjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
                 
                 try:
-                        (Gx,Gy),Gradius = cv2.minEnclosingCircle(Gcontour[0])
+                        (Gx,Gy),Gradius = cv2.minEnclosingCircle(self.mergeContors(Gcontour))
                 except:
                         Gx = -1
                         Gy = -1
                 try:
                 
-                        (Yx,Yy),Yradius = cv2.minEnclosingCircle(Ycontour[0])
+                        (Yx,Yy),Yradius = cv2.minEnclosingCircle(self.mergeContors(Ycontour))
                 except:
                         Yx = -1
                         Yy = -1
                 try:
 
-                        (Rx,Ry),Rradius = cv2.minEnclosingCircle(Rcontour[0])
+                        (Rx,Ry),Rradius = cv2.minEnclosingCircle(self.mergeContors(Rcontour))
                 except:
                         Rx = -1
                         Ry = -1
                 try:
-                        (Bx,By),Bradius = cv2.minEnclosingCircle(Bcontour[0])
+                        (Bx,By),Bradius = cv2.minEnclosingCircle(self.mergeContors(Bcontour))
                 except:
                         Bx = -1
                         By = -1
 
                 contourDic = {"Green": {'x':Gx,'y':Gy},"Yellow": {'x':Yx,'y':Yy},"Blue": {'x':Bx,'y':By},"Red": {'x':Rx,'y':Ry}}
 
-
-                #im_copy = image.copy()
+                
+                im_copy = image.copy()
+                # print(Bcontour)
+                # list_of_pts = []
+                # out = np.array([])
+                # for c in Bcontour:
+                #         for e in c:
+                #                 out = np.append(out,e)
+                # jank = cv2.convexHull(out)
+                # epsilon = 0.01*cv2.arcLength(Bcontour,True)
+                # approx = cv2.approxPolyDP(Bcontour,epsilon,True)
+                # print()
+                print(Bcontour[0].shape)
+                # print(Bcontour[1].shape)
+                # Bcontour[1] = np.append(Bcontour[1],np.array([[1,2]]))
+                # print(Bcontour[1].shape)
+                # list_of_pts = []
+                # for c in Bcontour:
+                #         for e in c:
+                #                 list_of_pts.append(e)
+                # ctr = np.array(list_of_pts).reshape((-1,1,2)).astype(np.int32)
+                # print(ctr.shape)
+                # print('-----')
+                Bcontour = self.mergeContors(Bcontour)
+                # ctr = cv2.convexHull(ctr)
+                # start = None
+                # for c in Bcontour:
+                #         if start is None:
+                #                 start = c
+                #                 continue
+                #         for()
+                cv2.drawContours(im_copy, [Bcontour], -1, (0, 255, 0), 1, cv2.LINE_AA)
                 #cv2.circle(im_copy,(Gx,Gy),Gradius,(0,255,0),2)
                 #cv2.drawContours(im_copy, Gcontour, -1, (255, 255, 255), 2, cv2.LINE_AA)
-                #cv2.imshow('Contoured', im_copy)
-                #cv2.waitKey(10000)
+                # cv2.imshow('Contoured', im_copy)
+                # cv2.waitKey(1)
 
                 return contourDic
-        
+        def mergeContors(self, ctrs):
+                list_of_pts = []
+                for c in ctrs:
+                        for e in c:
+                                list_of_pts.append(e)
+                ctr = np.array(list_of_pts).reshape((-1,1,2)).astype(np.int32)
+                ctr = cv2.convexHull(ctr)
+                return ctr
+
         def matchCoords(self, centres):
 
                 # the yz coordinates are still labeled as x and y due to function reusability but x = y and y = z in the yz case
