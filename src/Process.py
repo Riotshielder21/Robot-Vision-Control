@@ -72,23 +72,23 @@ class Image_processes:
                 #link 3 angle, blue to red 
                 #print("z diff: "+str(centres['Blue']['z']-centres['Red']['z'])) 
 
-                if joint3 > 0:
+                if joint3 > 0.1:
                         if (centres['Yellow']['z']-centres['Red']['z']) != 0:
                                 if (centres['Yellow']['x']-centres['Red']['x'])>0:
-                                        joint2 = np.pi/2 + np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))                
+                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))                
                                         #print(joint2)
                                 else:
-                                        joint2 = np.pi/2 + np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Red']['x']-centres['Yellow']['x']))               
+                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Red']['x']-centres['Yellow']['x']))               
                                         #print(joint2)
                         else:
                                 joint2 = 0
-                elif joint3 < 0:
+                elif joint3 < 0.1:
                         if (centres['Yellow']['z']-centres['Red']['z']) != 0:
                                 if (centres['Yellow']['x']-centres['Red']['x'])>0:
-                                        joint2 = np.pi/2 + np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Red']['x']-centres['Yellow']['x']))                
+                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))                
                                         #print(joint2)
                                 else:
-                                        joint2 = np.pi/2 + np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))               
+                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))               
                                         #print(joint2)
                         else: 
                                 joint2 = 0
@@ -100,10 +100,10 @@ class Image_processes:
                         else:
                                 joint2 = 0
                                 #print(joint2)
-                        if joint2 > 1.5707:
-                                joint2 = joint2 - np.pi
-                        if joint2 < -1.5707:
-                                joint2 = joint2 + np.pi
+                if joint2 > 1.5707:
+                        joint2 = joint2 - np.pi
+                if joint2 < -1.5707:
+                        joint2 = joint2 + np.pi
                 #link 2 angle, yellow to blue
                 #print("z diff: "+str(centres['Yellow']['z']-centres['Blue']['z']))
 
