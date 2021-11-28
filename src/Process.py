@@ -151,8 +151,8 @@ class Image_processes:
         
         Gcontour, hierarchy = cv2.findContours(Gjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         Ycontour, hierarchy = cv2.findContours(Yjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        Rcontour, hierarchy = cv2.findContours(Bjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        Bcontour, hierarchy = cv2.findContours(Rjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        Bcontour, hierarchy = cv2.findContours(Bjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        Rcontour, hierarchy = cv2.findContours(Rjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
         try:
                 (Gx,Gy),Gradius = cv2.minEnclosingCircle(Gcontour[0])
@@ -180,10 +180,9 @@ class Image_processes:
         contourDic = {"Green": {'x':Gx,'y':Gy},"Yellow": {'x':Yx,'y':Yy},"Blue": {'x':Bx,'y':By},"Red": {'x':Rx,'y':Ry}}
 
 
-        
         #im_copy = image.copy()
         #cv2.circle(im_copy,(Gx,Gy),Gradius,(0,255,0),2)
-        #cv2.drawContours(im_copy, Gcontours, -1, (255, 255, 255), 2, cv2.LINE_AA)
+        #cv2.drawContours(im_copy, Gcontour, -1, (255, 255, 255), 2, cv2.LINE_AA)
         #cv2.imshow('Contoured', im_copy)
         #cv2.waitKey(10000)
 
