@@ -19,6 +19,8 @@ class image_converter:
 
   # Defines publisher and subscriber
   def __init__(self):
+    self.yzCentres = None
+    self.cv_image1 = None
     # initialize the node named image_processing
     rospy.init_node('image_processing', anonymous=True)
     # initialize a publisher to send xz coordinates
@@ -27,8 +29,24 @@ class image_converter:
     self.image_sub1 = rospy.Subscriber("/camera1/robot/image_raw",Image,self.callback1)
     # initialize the bridge between openCV and ROS
     self.bridge = CvBridge()
+    rate = rospy.Rate(5)  # 5hz
+    # record the beginning time
+    while not rospy.is_shutdown():
+        #print("Sending")
+        self.showimg()
+        rate.sleep()
 
-
+  def showimg(self):
+          # yzCentres = imageprocessor1.Contours(yzcontours)
+    if self.yzCentres is None or self.cv_image1 is None:
+      return
+    image_copy = self.cv_image1.copy()
+    for c in self.yzCentres:
+      print(self.yzCentres[c]['x'])
+      cv2.circle(image_copy, (int(self.yzCentres[c]['x']), int(self.yzCentres[c]['y'])), 2, (255, 255, 255), -1)
+      cv2.putText(image_copy, c, (int(self.yzCentres[c]['x']) - 25, int(self.yzCentres[c]['y']) - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+    cv2.imshow("Image 1",image_copy)
+    cv2.waitKey(1)
   # Recieve data from camera 1, process it, and publish
   def callback1(self,data):
     # Recieve the image
@@ -51,7 +69,17 @@ class image_converter:
     # Publish the results
     try: 
       yzCentres = imageprocessor1.imProcess(self.cv_image1)
+      # yzCentres = imageprocessor1.Contours(yzcontours)
+      self.yzCentres = yzCentres
+      # image_copy = self.cv_image1.copy()
+      # for c in yzCentres:
+      #   print(yzCentres[c]['x'])
+      #   cv2.circle(image_copy, (int(yzCentres[c]['x']), int(yzCentres[c]['y'])), 2, (255, 255, 255), -1)
+      #   # cv2.putText(image_copy, "centroid", (c[0] - 25, c[1] - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+      
       self.imyz.publish(json.dumps(yzCentres))
+      # # cv2.imshow("Centriods",image_copy)
+      # cv2.waitKey(1)
 
     except CvBridgeError as e:
       print(e)
