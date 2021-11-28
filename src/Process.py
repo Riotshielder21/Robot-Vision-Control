@@ -157,21 +157,25 @@ class Image_processes:
         try:
                 (Gx,Gy),Gradius = cv2.minEnclosingCircle(Gcontour[0])
         except:
-                (Gx,Gy) = -1
+                Gx = -1
+                Gy = -1
         try:
         
                 (Yx,Yy),Yradius = cv2.minEnclosingCircle(Ycontour[0])
         except:
-                (Yx,Yy) = -1
+                Yx = -1
+                Yy = -1
         try:
 
                 (Rx,Ry),Rradius = cv2.minEnclosingCircle(Rcontour[0])
         except:
-                (Rx,Ry) = -1
+                Rx = -1
+                Ry = -1
         try:
                 (Bx,By),Bradius = cv2.minEnclosingCircle(Bcontour[0])
         except:
-                (Bx,By) = -1
+                Bx = -1
+                By = -1
 
         contourDic = {"Green": {'x':Gx,'y':Gy},"Yellow": {'x':Yx,'y':Yy},"Blue": {'x':Bx,'y':By},"Red": {'x':Rx,'y':Ry}}
 
