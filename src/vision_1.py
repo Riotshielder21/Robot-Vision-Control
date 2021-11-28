@@ -38,7 +38,6 @@ class image_converter:
 
         # record the beginning time
         self.time_trajectory = rospy.get_time()
-        self.r = rospy.Rate(30)
 
 # --------------------------------------------------------------------------------------------------------------
     def callbackyz(self, data):
@@ -55,10 +54,6 @@ class image_converter:
         # Publish the results
         try:
             self.CentresDict['xz'] = json.loads(data.data)
-            ic = image_converter()
-            if (('xz' in self.CentresDict) and ('yz' in self.CentresDict)):
-                
-                ic.anglesPublish(self.CentresDict)
 
         except CvBridgeError as e:
             print(e)
@@ -66,12 +61,16 @@ class image_converter:
     def anglesPublish(self, coords):
         im = Image_processes()
         matched = im.matchCoords(coords)
+        print(matched)
         Angles = Float64MultiArray()
         Angles.data = im.anglesVis1(matched)
-        print(Angles.data)
         self.joints_pub.publish(Angles)
-        self.r.sleep()
         
+def calculate(self):
+    ic = image_converter()
+    if (('xz' in self.CentresDict) and ('yz' in self.CentresDict)):
+        ic.anglesPublish(self.CentresDict)
+    
 
 def main(args):
     ic = image_converter()

@@ -66,9 +66,9 @@ class Image_processes:
                         joint2 = -1.57
                 else:
                         if ('z' in centres ['Yellow'] and 'z' in centres['Blue']):
-                                if (centres['Yellow']['x']-centres['Blue']['x']) >= 5  or (centres['Yellow']['x']-centres['Blue']['x']) <= -5:
+                                if (centres['Yellow']['x']-centres['Blue']['x']) >= 1  or (centres['Yellow']['x']-centres['Blue']['x']) <= -1:
                                         print(centres['Yellow']['x']-centres['Blue']['x'])
-                                        joint2 = np.arctan2(round((centres['Yellow']['z']-centres['Blue']['z'])/10)*10,round((centres['Yellow']['x']-centres['Blue']['x'])/10)*10)                     
+                                        joint2 = np.arctan2((centres['Yellow']['z']-centres['Blue']['z']),(centres['Yellow']['x']-centres['Blue']['x']))                   
                                         #print(joint2)
                                 else:
                                         joint2 = 0
@@ -82,8 +82,8 @@ class Image_processes:
                         joint3 = -1.57
                 else:
                         if ('z' in centres ['Yellow'] and 'z' in centres['Blue']):   
-                                if (centres['Yellow']['y']-centres['Blue']['y'])  >= 5 or (centres['Yellow']['y']-centres['Blue']['y']) <= -5:
-                                        joint3 = np.arctan2(round((centres['Yellow']['y']-centres['Blue']['y'])/10)*10,round((centres['Yellow']['z']-centres['Blue']['z'])/10)*10) 
+                                if (centres['Yellow']['y']-centres['Blue']['y'])  >= 1 or (centres['Yellow']['y']-centres['Blue']['y']) <= -1:
+                                        joint3 = np.arctan2((centres['Yellow']['y']-centres['Blue']['y']),(centres['Yellow']['z']-centres['Blue']['z']))
                                         #print(joint3)
                                 else:
                                         joint3 = 0
@@ -98,13 +98,13 @@ class Image_processes:
 
                 else:
                         if ('z' in centres ['Blue'] and 'z' in centres['Red']):    
-                                if (centres['Blue']['x']-centres['Red']['x'])  >= 5 or (centres['Blue']['x']-centres['Red']['x']) <= -5:
-                                        joint4 = np.arctan2(round((centres['Blue']['x']-centres['Red']['x'])/10)*10,round((centres['Blue']['z']-centres['Red']['z'])/10)*10)- joint2
+                                if (centres['Blue']['x']-centres['Red']['x'])  >= 1 or (centres['Blue']['x']-centres['Red']['x']) <= -1:
+                                        joint4 = np.arctan2((centres['Blue']['x']-centres['Red']['x']),(centres['Blue']['z']-centres['Red']['z']))- joint2
                                         #print(joint4)
                                 else:
                                         joint4 = 0
                                         #print(joint4)
-
+                print(centres)
                 return np.array([0, joint2, joint3, joint4])
 
         def anglesVis2(self, centres):
@@ -195,43 +195,43 @@ class Image_processes:
 
                 matchCoords = {}
                 matchCoords['Green'] = {}
-                matchCoords["Green"]['x'] = centres['xz']['Green']['x']
-                matchCoords["Green"]['y'] = centres['yz']['Green']['x']
-                matchCoords["Green"]['z'] = centres['yz']['Green']['y']
+                matchCoords["Green"]['x'] = round(centres['xz']['Green']['x']/10)*10
+                matchCoords["Green"]['y'] = round(centres['yz']['Green']['x']/10)*10
+                matchCoords["Green"]['z'] = round(centres['yz']['Green']['y']/10)*10
 
                 matchCoords['Yellow'] = {}
                 if centres['xz']['Yellow']['y'] == -1:                 
-                        matchCoords["Yellow"]['x'] = centres['xz']['Yellow']['x']
-                        matchCoords["Yellow"]['y'] = centres['yz']['Yellow']['x']
-                        matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
+                        matchCoords["Yellow"]['x'] = round(centres['xz']['Yellow']['x']/10)*10
+                        matchCoords["Yellow"]['y'] = round(centres['yz']['Yellow']['x']/10)*10
+                        matchCoords["Yellow"]['z'] = round(centres['yz']['Yellow']['y']/10)*10
                 else:
-                        matchCoords["Yellow"]['x'] = centres['xz']['Yellow']['x']
-                        matchCoords["Yellow"]['y'] = centres['yz']['Yellow']['x']
-                        matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
+                        matchCoords["Yellow"]['x'] = round(centres['xz']['Yellow']['x']/10)*10
+                        matchCoords["Yellow"]['y'] = round(centres['yz']['Yellow']['x']/10)*10
+                        matchCoords["Yellow"]['z'] = round(centres['xz']['Yellow']['y']/10)*10
                 
                 matchCoords['Blue'] = {}      
                 if centres['xz']['Blue']['y'] == -1: 
-                        matchCoords["Blue"]['x'] = centres['xz']['Blue']['x']
-                        matchCoords["Blue"]['y'] = centres['yz']['Blue']['x']
-                        matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
+                        matchCoords["Blue"]['x'] = round(centres['xz']['Blue']['x']/10)*10
+                        matchCoords["Blue"]['y'] = round(centres['yz']['Blue']['x']/10)*10
+                        matchCoords["Blue"]['z'] = round(centres['yz']['Blue']['y']/10)*10
                 else:
-                        matchCoords["Blue"]['x'] = centres['xz']['Blue']['x']
-                        matchCoords["Blue"]['y'] = centres['yz']['Blue']['x']
-                        matchCoords["Blue"]['z'] = centres['xz']['Blue']['y']
+                        matchCoords["Blue"]['x'] = round(centres['xz']['Blue']['x']/10)*10
+                        matchCoords["Blue"]['y'] = round(centres['yz']['Blue']['x']/10)*10
+                        matchCoords["Blue"]['z'] = round(centres['xz']['Blue']['y']/10)*10
                 if centres['yz']['Blue']['x'] == -1: 
-                        matchCoords["Blue"]['y'] =  centres['yz']['Green']['x']
+                        matchCoords["Blue"]['y'] =  round(centres['yz']['Green']['x']/10)*10
         
                 matchCoords['Red'] = {}            
                 if centres['xz']['Red']['y'] == -1: 
-                        matchCoords["Red"]['x'] = centres['xz']['Red']['x']
-                        matchCoords["Red"]['y'] = centres['yz']['Red']['x']
-                        matchCoords["Red"]['z'] = centres['yz']['Red']['y']
+                        matchCoords["Red"]['x'] = round(centres['xz']['Red']['x']/10)*10
+                        matchCoords["Red"]['y'] = round(centres['yz']['Red']['x']/10)*10
+                        matchCoords["Red"]['z'] = round(centres['yz']['Red']['y']/10)*10
                 else:
-                        matchCoords["Red"]['x'] = centres['xz']['Red']['x']
-                        matchCoords["Red"]['y'] = centres['yz']['Red']['x']
-                        matchCoords["Red"]['z'] = centres['xz']['Red']['y']
+                        matchCoords["Red"]['x'] = round(centres['xz']['Red']['x']/10)*10
+                        matchCoords["Red"]['y'] = round(centres['yz']['Red']['x']/10)*10
+                        matchCoords["Red"]['z'] = round(centres['xz']['Red']['y']/10)*10
 
                 if centres['xz']['Red']['x'] == -1:
-                        matchCoords["Red"]['x'] = centres['xz']['Blue']['x']
+                        matchCoords["Red"]['x'] = round(centres['xz']['Blue']['x']/10)*10
                 #print(matchCoords)
                 return matchCoords
