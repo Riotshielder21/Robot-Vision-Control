@@ -142,7 +142,9 @@ class Image_processes:
                 climits = [[green_l,green_u],[yellow_l,yellow_u],[blue_l,blue_u],[red_l,red_u]]
                 
                 masks = [ cv2.inRange(image, climit[0], climit[1]) for climit in climits]
-              
+                low = (20, 100, 100)
+                up = (30, 255, 255)
+                masks[1] = cv2.inRange(cv2.cvtColor(image,cv2.COLOR_BGR2HSV), low, up) #Hack to get yellow more reliable
                 maskJs = [cv2.cvtColor(mask,cv2.COLOR_BGR2RGB) for mask in masks]
               
                 frames = [(image&maskJ) for maskJ in maskJs]
