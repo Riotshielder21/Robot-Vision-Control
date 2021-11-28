@@ -108,98 +108,44 @@ class Image_processes:
                 red_l = (0,0,50)
                 yellow_u = (20,256,256)
                 yellow_l = (0,50,50)
+                climits = [[green_l,green_u],[yellow_l,yellow_u],[blue_l,blue_u],[red_l,red_u]]
                 
-                maskG = cv2.inRange(image, green_l, green_u)
-                maskY = cv2.inRange(image, yellow_l, yellow_u)
-                maskB = cv2.inRange(image, blue_l, blue_u)
-                maskR = cv2.inRange(image, red_l, red_u)
+                masks = [ cv2.inRange(image, climit[0], climit[1]) for climit in climits]
+              
+                maskJs = [cv2.cvtColor(mask,cv2.COLOR_BGR2RGB) for mask in masks]
+              
+                frames = [(image&maskJ) for maskJ in maskJs]
+                
+                gray_frames = [cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY) for frame in frames]
+                
+                jThreshes = [cv2.threshold(gray_frame, 1, 255, cv2.THRESH_BINARY) for gray_frame in gray_frames]
+                
+                jcontours = [cv2.findContours(jthresh[1], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) for jthresh in jThreshes]
+               
+                cords = []
 
-                maskJ1 = cv2.cvtColor(maskG,cv2.COLOR_BGR2RGB)
-                maskJ2 = cv2.cvtColor(maskY,cv2.COLOR_BGR2RGB)
-                maskJ3 = cv2.cvtColor(maskB,cv2.COLOR_BGR2RGB)
-                maskJ4 = cv2.cvtColor(maskR,cv2.COLOR_BGR2RGB)
-                
-                Green_frame = image & maskJ1
-                Yellow_frame = image & maskJ2 
-                Blue_frame = image & maskJ3 
-                Red_frame = image & maskJ4
-        
-                Gframe_gray = cv2.cvtColor(Green_frame, cv2.COLOR_RGB2GRAY)
-                Yframe_gray = cv2.cvtColor(Yellow_frame, cv2.COLOR_RGB2GRAY)
-                Bframe_gray = cv2.cvtColor(Blue_frame, cv2.COLOR_RGB2GRAY)
-                Rframe_gray = cv2.cvtColor(Red_frame, cv2.COLOR_RGB2GRAY)
-                
-                Gret, Gjoint_thresh = cv2.threshold(Gframe_gray, 1, 255, cv2.THRESH_BINARY)
-                Yret, Yjoint_thresh = cv2.threshold(Yframe_gray, 1, 255, cv2.THRESH_BINARY)
-                Bret, Bjoint_thresh = cv2.threshold(Bframe_gray, 1, 255, cv2.THRESH_BINARY)
-                Rret, Rjoint_thresh = cv2.threshold(Rframe_gray, 1, 255, cv2.THRESH_BINARY)
-                
-                Gcontour, hierarchy = cv2.findContours(Gjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-                Ycontour, hierarchy = cv2.findContours(Yjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-                Bcontour, hierarchy = cv2.findContours(Bjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-                Rcontour, hierarchy = cv2.findContours(Rjoint_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-                
-                try:
-                        (Gx,Gy),Gradius = cv2.minEnclosingCircle(self.mergeContors(Gcontour))
-                except:
-                        Gx = -1
-                        Gy = -1
-                try:
-                
-                        (Yx,Yy),Yradius = cv2.minEnclosingCircle(self.mergeContors(Ycontour))
-                except:
-                        Yx = -1
-                        Yy = -1
-                try:
+                for jcontour in jcontours:
+                        # print(jcontour)
+                        try:
+                                (Gx,Gy),Gradius = cv2.minEnclosingCircle(self.mergeContors(jcontour[0]))
+                                # print(Gradius)
+                                if Gradius < 2: #Filter out single pixel showing
+                                        cords.append([-1,-1])
+                                else:
+                                        cords.append([Gx,Gy])
+                        except:
+                                cords.append([-1,-1])
 
-                        (Rx,Ry),Rradius = cv2.minEnclosingCircle(self.mergeContors(Rcontour))
-                except:
-                        Rx = -1
-                        Ry = -1
-                try:
-                        (Bx,By),Bradius = cv2.minEnclosingCircle(self.mergeContors(Bcontour))
-                except:
-                        Bx = -1
-                        By = -1
-
-                contourDic = {"Green": {'x':Gx,'y':Gy},"Yellow": {'x':Yx,'y':Yy},"Blue": {'x':Bx,'y':By},"Red": {'x':Rx,'y':Ry}}
-
+                contourDic = {"Green": {'x':cords[0][0],'y':cords[0][1]},"Yellow": {'x':cords[1][0],'y':cords[1][1]},"Blue": {'x':cords[2][0],'y':cords[2][1]},"Red": {'x':cords[3][0],'y':cords[3][1]}}
                 
-                im_copy = image.copy()
-                # print(Bcontour)
-                # list_of_pts = []
-                # out = np.array([])
-                # for c in Bcontour:
-                #         for e in c:
-                #                 out = np.append(out,e)
-                # jank = cv2.convexHull(out)
-                # epsilon = 0.01*cv2.arcLength(Bcontour,True)
-                # approx = cv2.approxPolyDP(Bcontour,epsilon,True)
-                # print()
-                print(Bcontour[0].shape)
-                # print(Bcontour[1].shape)
-                # Bcontour[1] = np.append(Bcontour[1],np.array([[1,2]]))
-                # print(Bcontour[1].shape)
-                # list_of_pts = []
-                # for c in Bcontour:
-                #         for e in c:
-                #                 list_of_pts.append(e)
-                # ctr = np.array(list_of_pts).reshape((-1,1,2)).astype(np.int32)
-                # print(ctr.shape)
-                # print('-----')
-                Bcontour = self.mergeContors(Bcontour)
-                # ctr = cv2.convexHull(ctr)
-                # start = None
-                # for c in Bcontour:
-                #         if start is None:
-                #                 start = c
-                #                 continue
-                #         for()
-                cv2.drawContours(im_copy, [Bcontour], -1, (0, 255, 0), 1, cv2.LINE_AA)
-                #cv2.circle(im_copy,(Gx,Gy),Gradius,(0,255,0),2)
-                #cv2.drawContours(im_copy, Gcontour, -1, (255, 255, 255), 2, cv2.LINE_AA)
-                # cv2.imshow('Contoured', im_copy)
-                # cv2.waitKey(1)
+                # im_copy = image.copy()
+                
+                # Bcontour = self.mergeContors(Bcontour)
+                # cv2.drawContours(im_copy, [Bcontour], -1, (0, 255, 0), 1, cv2.LINE_AA)
+                # #cv2.circle(im_copy,(Gx,Gy),Gradius,(0,255,0),2)
+                # #cv2.drawContours(im_copy, Gcontour, -1, (255, 255, 255), 2, cv2.LINE_AA)
+                # # cv2.imshow('Contoured', im_copy)
+                # # cv2.waitKey(1)
 
                 return contourDic
         def mergeContors(self, ctrs):
