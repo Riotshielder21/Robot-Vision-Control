@@ -35,9 +35,13 @@ class image_converter:
         # initialize a publisher to send joints' angular position to a topic called joints_pos
         self.joints_pub = rospy.Publisher(
             "joint_angles", Float64MultiArray, queue_size=1)
-
+        rate = rospy.Rate(5)  # 5hz
         # record the beginning time
         self.time_trajectory = rospy.get_time()
+        while not rospy.is_shutdown():
+            print("Sending")
+            self.anglesPublish(self.CentresDict)
+            rate.sleep()
 
 # --------------------------------------------------------------------------------------------------------------
     def callbackyz(self, data):
@@ -59,12 +63,15 @@ class image_converter:
             print(e)
 
     def anglesPublish(self, coords):
-        im = Image_processes()
-        matched = im.matchCoords(coords)
-        print(matched)
-        Angles = Float64MultiArray()
-        Angles.data = im.anglesVis1(matched)
-        self.joints_pub.publish(Angles)
+        if 'xz' in self.CentresDict and 'yz' in self.CentresDict:
+            print("Both Joints found")
+            im = Image_processes()
+            matched = im.matchCoords(coords)
+            print(matched)
+            Angles = Float64MultiArray()
+            Angles.data = im.anglesVis1(matched)
+            print(Angles.data)
+            self.joints_pub.publish(Angles)
         
 def calculate(self):
     ic = image_converter()
