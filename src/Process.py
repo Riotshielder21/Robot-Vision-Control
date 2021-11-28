@@ -179,11 +179,22 @@ class Image_processes:
 
                 matchCoords = {}
 
-                yzcenter = centres['yz']
-                xzcenter = centres['xz']
+                yzcenter = {}
+                xzcenter = {}
+                for c in centres['yz']:
+                        yzcenter[c] = {}
+                        yzcenter[c]['x'] = -1
+                        yzcenter[c]['y'] = centres['yz'][c]['x']
+                        yzcenter[c]['z'] = centres['yz'][c]['y']
+                for c in centres['xz']:
+                        xzcenter[c] = {}
+                        xzcenter[c]['x'] = centres['xz'][c]['x']
+                        xzcenter[c]['y'] = -1
+                        xzcenter[c]['z'] = centres['xz'][c]['y']
                 for colour in yzcenter:
                         #print(colour)
-                        for axis in ["x","y"]:
+                        matchCoords[colour] = {}
+                        for axis in yzcenter[colour]:
                                 #print(axis)
                                 out = -1
                                 cord1 = yzcenter[colour][axis]
@@ -194,6 +205,8 @@ class Image_processes:
                                         out = np.max([cord1, cord2])
                                 if out > 0:
                                         matchCoords[colour][axis] = round(out/10)*10
+                                else:
+                                        print("Warning missing data")
 
                 if centres['xz']['Yellow']['y'] == -1:
                         matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
