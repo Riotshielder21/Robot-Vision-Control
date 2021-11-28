@@ -55,85 +55,22 @@ class image_converter:
         # Publish the results
         try:
             self.CentresDict['xz'] = json.loads(data.data)
-
+            ic = image_converter()
             if (('xz' in self.CentresDict) and ('yz' in self.CentresDict)):
-                ic = image_converter()
-                matched = ic.matchCoords(self.CentresDict)
-                ic.anglesPublish(matched)
+                
+                ic.anglesPublish(self.CentresDict)
 
         except CvBridgeError as e:
             print(e)
 
-    def anglesPublish(self, matched):
+    def anglesPublish(self, coords):
         im = Image_processes()
+        matched = im.matchCoords(coords)
         Angles = Float64MultiArray()
         Angles.data = im.anglesVis1(matched)
         print(Angles.data)
         self.joints_pub.publish(Angles)
         self.r.sleep()
-
-    def matchCoords(self, centres):
-
-        # the yz coordinates are still labeled as x and y due to function reusability but x = y and y = z in the yz case
-
-        matchCoords = {}
-        matchCoords['Green'] = {}
-        if 'Green' in centres['xz']:
-            if 'Green' in centres['yz']:
-                matchCoords["Green"]['x'] = centres['xz']['Green']['x']
-                matchCoords["Green"]['y'] = centres['yz']['Green']['x']
-                matchCoords["Green"]['z'] = centres['yz']['Green']['y']
-        matchCoords['Yellow'] = {}
-        if 'Yellow' in centres['xz']:
-            if 'Yellow' in centres['yz']:                    
-                matchCoords["Yellow"]['x'] = centres['xz']['Yellow']['x']
-                matchCoords["Yellow"]['y'] = centres['yz']['Yellow']['x']
-                matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
-            else:
-                matchCoords["Yellow"]['x'] = centres['xz']['Yellow']['x']
-                matchCoords["Yellow"]['y'] = -1
-                matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
-        
-        matchCoords['Blue'] = {}        
-        if 'Blue' in centres['xz']:
-            if 'Blue' in centres['yz']:
-                matchCoords["Blue"]['x'] = centres['xz']['Blue']['x']
-                matchCoords["Blue"]['y'] = centres['yz']['Blue']['x']
-                matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
-            else:
-                matchCoords["Blue"]['x'] = centres['xz']['Blue']['x']
-                matchCoords["Blue"]['y'] = -1
-                matchCoords["Blue"]['z'] = centres['xz']['Blue']['y']
-        elif 'Blue' in centres['yz']:
-            matchCoords["Blue"]['x'] = -1
-            matchCoords["Blue"]['y'] = centres['yz']['Blue']['x']
-            matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
-        else:
-            matchCoords["Blue"]['x'] = -1
-            matchCoords["Blue"]['y'] = -1
-            matchCoords["Blue"]['z'] = -1
-
-        
-        matchCoords['Red'] = {}            
-        if 'Red' in centres['xz']:
-            if 'Red' in centres['yz']:
-                matchCoords["Red"]['x'] = centres['xz']['Red']['x']
-                matchCoords["Red"]['y'] = centres['yz']['Red']['x']
-                matchCoords["Red"]['z'] = centres['yz']['Red']['y']
-            else:
-                matchCoords["Red"]['x'] = centres['xz']['Red']['x']
-                matchCoords["Red"]['y'] = -1
-                matchCoords["Red"]['z'] = centres['xz']['Red']['y']
-        elif 'Red' in centres['yz']:
-            matchCoords["Red"]['x'] = -1
-            matchCoords["Red"]['y'] = centres['yz']['Red']['x']
-            matchCoords["Red"]['z'] = centres['yz']['Red']['y']
-        else:
-            matchCoords["Red"]['x'] = -1
-            matchCoords["Red"]['y'] = -1
-            matchCoords["Red"]['z'] = -1
-        #print(matchCoords)
-        return matchCoords
         
 
 def main(args):
