@@ -178,29 +178,33 @@ class Image_processes:
                 # the yz coordinates are still labeled as x and y due to function reusability but x = y and y = z in the yz case
 
                 matchCoords = {}
-                matchCoords['Green'] = {}
-                matchCoords["Green"]['x'] = round(centres['xz']['Green']['x']/10)*10
-                matchCoords["Green"]['y'] = round(centres['yz']['Green']['x']/10)*10
-                matchCoords["Green"]['z'] = round(centres['yz']['Green']['y']/10)*10
+
+                yzcenter = centres['yz']
+                xzcenter = centres['xz']
+                for colour in yzcenter:
+                        #print(colour)
+                        for axis in ["x","y"]:
+                                #print(axis)
+                                out = -1
+                                cord1 = yzcenter[colour][axis]
+                                cord2 = xzcenter[colour][axis]
+                                if cord1 >= 0 and cord2 >= 0:
+                                        out = np.mean([cord1,cord2])
+                                else:
+                                        out = np.max([cord1, cord2])
+                                if out > 0:
+                                        matchCoords[colour][axis] = round(out/10)*10
 
                 matchCoords['Yellow'] = {}
-                if centres['xz']['Yellow']['y'] == -1:                 
-                        matchCoords["Yellow"]['x'] = round(centres['xz']['Yellow']['x']/10)*10
-                        matchCoords["Yellow"]['y'] = round(centres['yz']['Yellow']['x']/10)*10
+                if centres['xz']['Yellow']['y'] == -1:
                         matchCoords["Yellow"]['z'] = round(centres['yz']['Yellow']['y']/10)*10
                 else:
-                        matchCoords["Yellow"]['x'] = round(centres['xz']['Yellow']['x']/10)*10
-                        matchCoords["Yellow"]['y'] = round(centres['yz']['Yellow']['x']/10)*10
                         matchCoords["Yellow"]['z'] = round(centres['xz']['Yellow']['y']/10)*10
                 
                 matchCoords['Blue'] = {}      
                 if centres['xz']['Blue']['y'] == -1: 
-                        matchCoords["Blue"]['x'] = round(centres['xz']['Blue']['x']/10)*10
-                        matchCoords["Blue"]['y'] = round(centres['yz']['Blue']['x']/10)*10
                         matchCoords["Blue"]['z'] = round(centres['yz']['Blue']['y']/10)*10
                 else:
-                        matchCoords["Blue"]['x'] = round(centres['xz']['Blue']['x']/10)*10
-                        matchCoords["Blue"]['y'] = round(centres['yz']['Blue']['x']/10)*10
                         matchCoords["Blue"]['z'] = round(centres['xz']['Blue']['y']/10)*10
                 if  matchCoords["Blue"]['y'] == -1: 
                         matchCoords["Blue"]['y'] =  matchCoords["Yellow"]['y']
@@ -208,13 +212,9 @@ class Image_processes:
                         matchCoords["Blue"]['x'] =  matchCoords["Yellow"]['x']
         
                 matchCoords['Red'] = {}            
-                if centres['xz']['Red']['y'] == -1: 
-                        matchCoords["Red"]['x'] = round(centres['xz']['Red']['x']/10)*10
-                        matchCoords["Red"]['y'] = round(centres['yz']['Red']['x']/10)*10
+                if centres['xz']['Red']['y'] == -1:
                         matchCoords["Red"]['z'] = round(centres['yz']['Red']['y']/10)*10
                 else:
-                        matchCoords["Red"]['x'] = round(centres['xz']['Red']['x']/10)*10
-                        matchCoords["Red"]['y'] = round(centres['yz']['Red']['x']/10)*10
                         matchCoords["Red"]['z'] = round(centres['xz']['Red']['y']/10)*10
 
                 if matchCoords["Red"]['x'] == -1:
