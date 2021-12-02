@@ -3,7 +3,10 @@ import sys
 import rospy
 import cv2
 import numpy as np
-
+from tf import TransformBroadcaster
+from sensor_msgs.msg import JointState
+import rospy
+from rospy import Time 
 class Image_processes:
 
         def _init_(self):
@@ -105,16 +108,40 @@ class Image_processes:
                 # calculate angle
                 hybrid = self.getInnerAngle(green,yellow,blue)
                 j4 = self.getInnerAngle(yellow,blue,red)
-
+                
                 #adjust for persepctive distortion
                 # if j2>0.5:
                 #         j3 = j3 - j2*0.2
                 # if j3>1:
                 #         j2 = j2 - j3*0.6
                 # print(np.array([0,j2,j3,j4]))
+                ms = self.calpixScale(green, yellow)
+                # ms = 1
+                mred = ms* red
+                mblue = ms * blue
+                myellow = ms * yellow
+                mgreen = ms * green
+                mred = mred - mgreen
+                mblue = mblue - mgreen
+                myellow = myellow - mgreen
+                mgreen = mgreen - mgreen
+                self.b = TransformBroadcaster()
+                rotation = [0,0,0,1]
+                self.b.sendTransform(mred, rotation, Time.now(), 'red', 'link0')
+                self.b.sendTransform(mblue, rotation, Time.now(), 'blue', 'link0')
+                self.b.sendTransform(myellow, rotation, Time.now(), 'yellow', 'link0')                                                                                                                                                                                                  
+                self.b.sendTransform(mgreen, rotation, Time.now(), 'green', 'link0')
+                
+                # joint2 = np.arctan2(green[1]-blue[1], green[2]-blue[2])
+                print(self.calpixScale(yellow, blue))
+                # print(self.calpixScale(green, yellow))
+                # Z scale = 0.0386                                              
+                # X scale = 0.0391
                 return np.array([0, joint2, joint3, j4])
 
-
+        def calpixScale(self, base, p1):
+                spacing = 4
+                return spacing/np.linalg.norm(base-p1)
 #----------------------------------------------------------------------------------------------------------       
 
 
@@ -274,7 +301,7 @@ class Image_processes:
                         yzcenter[c] = {}
                         yzcenter[c]['x'] = -1
                         yzcenter[c]['y'] = centres['yz'][c]['x']
-                        yzcenter[c]['z'] = centres['yz'][c]['y']
+                        yzcenter[c]['z'] =  centres['yz'][c]['y']
                 for c in centres['xz']:
                         xzcenter[c] = {}
                         xzcenter[c]['x'] = centres['xz'][c]['x']
@@ -296,32 +323,35 @@ class Image_processes:
                                         matchCoords[colour][axis] = out
                                 else:
                                         matchCoords[colour][axis] = -1
+                                if axis == 'z' and matchCoords[colour][axis] >= 0 :
+                                        matchCoords[colour][axis] = -matchCoords[colour][axis]
+
                                         #print("Warning missing data")
 
-                if centres['xz']['Yellow']['y'] == -1:
-                        matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
-                else:
-                        matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
+                # if centres['xz']['Yellow']['y'] == -1:
+                #         matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
+                # else:
+                #         matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
                    
 
-                if centres['xz']['Blue']['y'] == -1: 
-                        matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
-                else:
-                        matchCoords["Blue"]['z'] = centres['xz']['Blue']['y']
-                if  matchCoords["Blue"]['y'] == -1: 
-                        matchCoords["Blue"]['y'] =  matchCoords["Yellow"]['y']
-                if  matchCoords["Blue"]['x'] == -1: 
-                        matchCoords["Blue"]['x'] =  matchCoords["Yellow"]['x']
+                # if centres['xz']['Blue']['y'] == -1: 
+                #         matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
+                # else:
+                #         matchCoords["Blue"]['z'] = centres['xz']['Blue']['y']
+                # if  matchCoords["Blue"]['y'] == -1: 
+                #         matchCoords["Blue"]['y'] =  matchCoords["Yellow"]['y']
+                # if  matchCoords["Blue"]['x'] == -1: 
+                #         matchCoords["Blue"]['x'] =  matchCoords["Yellow"]['x']
                  
                  
-                if centres['xz']['Red']['y'] == -1:
-                        matchCoords["Red"]['z'] = centres['yz']['Red']['y']
-                else:
-                        matchCoords["Red"]['z'] = centres['xz']['Red']['y']
+                # if centres['xz']['Red']['y'] == -1:
+                #         matchCoords["Red"]['z'] = centres['yz']['Red']['y']
+                # else:
+                #         matchCoords["Red"]['z'] = centres['xz']['Red']['y']
 
-                if matchCoords["Red"]['x'] == -1:
-                        matchCoords["Red"]['x'] = matchCoords["Blue"]['x']
-                if matchCoords["Red"]['y'] == -1:
-                        matchCoords["Red"]['y'] = matchCoords["Blue"]['y']
+                # if matchCoords["Red"]['x'] == -1:
+                #         matchCoords["Red"]['x'] = matchCoords["Blue"]['x']
+                # if matchCoords["Red"]['y'] == -1:
+                #         matchCoords["Red"]['y'] = matchCoords["Blue"]['y']
                 #print(matchCoords)
                 return matchCoords
