@@ -328,30 +328,30 @@ class Image_processes:
 
                                         #print("Warning missing data")
 
-                # if centres['xz']['Yellow']['y'] == -1:
-                #         matchCoords["Yellow"]['z'] = centres['yz']['Yellow']['y']
+                if centres['xz']['Yellow']['y'] == -1:
+                        matchCoords["Yellow"]['z'] = yzcenter['Yellow']['y']
                 # else:
                 #         matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
                    
 
-                # if centres['xz']['Blue']['y'] == -1: 
-                #         matchCoords["Blue"]['z'] = centres['yz']['Blue']['y']
+                if centres['xz']['Blue']['y'] == -1: 
+                        matchCoords["Blue"]['z'] = yzcenter['Blue']['y']
                 # else:
                 #         matchCoords["Blue"]['z'] = centres['xz']['Blue']['y']
-                # if  matchCoords["Blue"]['y'] == -1: 
-                #         matchCoords["Blue"]['y'] =  matchCoords["Yellow"]['y']
-                # if  matchCoords["Blue"]['x'] == -1: 
-                #         matchCoords["Blue"]['x'] =  matchCoords["Yellow"]['x']
+                if  matchCoords["Blue"]['y'] == -1: 
+                        matchCoords["Blue"]['y'] =  matchCoords["Yellow"]['y']
+                if  matchCoords["Blue"]['x'] == -1: 
+                        matchCoords["Blue"]['x'] =  matchCoords["Yellow"]['x']
                  
                  
-                # if centres['xz']['Red']['y'] == -1:
-                #         matchCoords["Red"]['z'] = centres['yz']['Red']['y']
+                if centres['xz']['Red']['y'] == -1:
+                        matchCoords["Red"]['z'] = yzcenter['Red']['y']
                 # else:
                 #         matchCoords["Red"]['z'] = centres['xz']['Red']['y']
 
-                # if matchCoords["Red"]['x'] == -1:
-                #         matchCoords["Red"]['x'] = matchCoords["Blue"]['x']
-                # if matchCoords["Red"]['y'] == -1:
-                #         matchCoords["Red"]['y'] = matchCoords["Blue"]['y']
+                if matchCoords["Red"]['x'] == -1:
+                        matchCoords["Red"]['x'] = matchCoords["Blue"]['x']
+                if matchCoords["Red"]['y'] == -1:
+                        matchCoords["Red"]['y'] = matchCoords["Blue"]['y']
                 #print(matchCoords)
                 return matchCoords
