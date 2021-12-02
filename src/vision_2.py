@@ -67,10 +67,10 @@ class image_converter:
             #print("Both Joints found")
             im = Image_processes()
             matched = im.matchCoords(coords)
-            print(matched)
+            #print(matched)
             Angles = Float64MultiArray()
-            Angles.data = im.anglesVis1(matched)
-            print(Angles.data)
+            Angles.data = im.anglesVis2(matched)
+            print(str(Angles.data)+"\n\n")
             self.joints_pub.publish(Angles)
         
     def calculate(self):
