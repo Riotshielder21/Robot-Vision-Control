@@ -114,6 +114,10 @@ class Image_processes:
                 # print(np.array([0,j2,j3,j4]))
                 return np.array([0, joint2, joint3, j4])
 
+
+#----------------------------------------------------------------------------------------------------------       
+
+
         def anglesVis2(self, centres):
                 
                 red = self.pointToVector(centres['Red'])
@@ -131,43 +135,41 @@ class Image_processes:
                                 joint1 = 0
                         else:
                                 #red joint is usable to calculate the angle
-                                joint1 = -np.arctan2(centres['Yellow']['x']-centres['Red']['x'], centres['Yellow']['y']-centres['Red']['y'])
+                                joint1 = - np.arctan2(centres['Yellow']['x']-centres['Red']['x'], centres['Yellow']['y']-centres['Red']['y'])
                 else:
                         #blue joint is useable to calculate rotation
-                        joint1 = -np.arctan2(centres['Yellow']['x']-centres['Blue']['x'], centres['Yellow']['y']-centres['Blue']['y'])
-                if joint1 > 1.57:
-                        joint1 -= np.pi
-                if joint1 < -1.57:
-                        joint1 += np.pi
+                        joint1 = - np.arctan2(centres['Yellow']['x']-centres['Blue']['x'], centres['Yellow']['y']-centres['Blue']['y'])
 
-                if joint1 > 0:
-                        if(self.xDif(centres['Blue'], centres['Yellow'])<0):
-                                j3 = -j3 
-                                print("invert j3")
-                        if(self.xDif(centres['Red'], centres['Blue'])<0):
-                                j4 = -j4
-                                print("j4 diff pos")
-                        elif self.yDif(centres['Red'], centres['Blue'])<0:
-                                j4 = -j4
-                                print("y diff for j4")
+                # if joint1 > 0:
+                #         if(self.xDif(centres['Blue'], centres['Yellow'])>0):
+                #                 j3 = -j3 
+                #                 print("invert j3")
+                #         if(self.xDif(centres['Red'], centres['Blue'])<0):
+                #                 j4 = -j4
+                #                 print("j4 diff pos")
+                #         elif self.yDif(centres['Red'], centres['Blue'])<0:
+                #                 j4 = -j4
+                #                 print("y diff for j4")
 
        
                 
-                if joint1 < 0:
-                        if(self.xDif(centres['Blue'], centres['Yellow'])>0):
-                                j3 = -j3
+                # if joint1 < 0:
+                #         if(self.xDif(centres['Blue'], centres['Yellow'])<0):
+                #                 j3 = -j3
 
-                                print("invert j3")
+                #                 print("invert j3")
               
-                        if(self.xDif(centres['Red'], centres['Blue'])>0):
-                                if self.yDif(centres['Red'], centres['Blue'])>0:
-                                        j4 = -j4
-                                        print("j4 diff neg,y obscured")
+                #         if(self.xDif(centres['Red'], centres['Blue'])>0):
+                #                 if self.yDif(centres['Red'], centres['Blue'])>0:
+                #                         j4 = -j4
+                #                         print("j4 diff neg,y obscured")
                         
-                        if self.yDif(centres['Red'], centres['Blue'])>0:
-                                j4 = -j4
-                                print("y diff for j4")
+                #         elif self.yDif(centres['Red'], centres['Blue'])>0:
+                #                 j4 = -j4
+                #                 print("y diff for j4")
 
+
+#----------------------------------------------------------------------------------------------------------       
 
 
                 return np.array([round(joint1,2), 0, round(j3,2), round(j4,2)])
@@ -193,35 +195,7 @@ class Image_processes:
 
                 angle = np.arccos(cosineAngle)
                 return angle
-# def calculate_angle(point_a, point_b):
-#     """ Calculate angle between two points """
-#     ang_a = np.arctan2(*point_a[::-1])
-#     ang_b = np.arctan2(*point_b[::-1])
-#     return np.rad2deg((ang_a - ang_b) % (2 * np.pi))
 
-# a = np.array([14, 140])
-# b = np.array([13, 120])
-# c = np.array([12, 130])
-# d = np.array([11, 110])
-
-# # create vectors
-# ba = a - b
-# bc = c - b
-# cd = d - c
-
-# # calculate angle
-# cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
-
-# angle = np.arccos(cosine_angle)
-# inner_angle = np.degrees(angle)
-
-# print inner_angle  # 8.57299836361
-
-
-# # see how changing the direction changes the angle
-# print calculate_angle(bc, cd) # 188.572998364
-# print calculate_angle(cd, bc) # 171.427001636
-#----------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------       
 
         # Perform image processing, green base joint not required
