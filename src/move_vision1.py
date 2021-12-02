@@ -30,8 +30,9 @@ class arm_mover1:
    
     rate = rospy.Rate(50)  # 5hz
     # record the beginning time
+    stime = rospy.get_time()
     while not rospy.is_shutdown():
-      t = rospy.get_time()
+      t = rospy.get_time()-stime
       j2 = (np.pi/2)*np.sin((np.pi/15)*t)
       j3 =(np.pi/2)*np.sin((np.pi/20)*t)
       j4 =(np.pi/2)*np.sin((np.pi/18)*t)

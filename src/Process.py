@@ -329,13 +329,13 @@ class Image_processes:
                                         #print("Warning missing data")
 
                 if centres['xz']['Yellow']['y'] == -1:
-                        matchCoords["Yellow"]['z'] = yzcenter['Yellow']['y']
+                        matchCoords["Yellow"]['z'] = -yzcenter['Yellow']['y']
                 # else:
                 #         matchCoords["Yellow"]['z'] = centres['xz']['Yellow']['y']
                    
 
                 if centres['xz']['Blue']['y'] == -1: 
-                        matchCoords["Blue"]['z'] = yzcenter['Blue']['y']
+                        matchCoords["Blue"]['z'] = -yzcenter['Blue']['y']
                 # else:
                 #         matchCoords["Blue"]['z'] = centres['xz']['Blue']['y']
                 if  matchCoords["Blue"]['y'] == -1: 
@@ -345,7 +345,7 @@ class Image_processes:
                  
                  
                 if centres['xz']['Red']['y'] == -1:
-                        matchCoords["Red"]['z'] = yzcenter['Red']['y']
+                        matchCoords["Red"]['z'] = -yzcenter['Red']['y']
                 # else:
                 #         matchCoords["Red"]['z'] = centres['xz']['Red']['y']
 

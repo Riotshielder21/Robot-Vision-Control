@@ -29,7 +29,7 @@ class image_converter:
     
         translation = (0.0, 0.0, 0.0)
         rotation = (0.0, 0.0, 0.0, 1.0)
-        rate = rospy.Rate(5)  # 5hz
+        rate = rospy.Rate(50)  # 5hz
         
         x, y = 0.0, 0.0
         rospy.Subscriber("/robot/joint_states", JointState, self.callback) 
