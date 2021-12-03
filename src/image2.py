@@ -29,7 +29,7 @@ class image_converter:
     self.image_sub2 = rospy.Subscriber("/camera2/robot/image_raw",Image,self.callback2)
     # initialize the bridge between openCV and ROS
     self.bridge = CvBridge()
-    rate = rospy.Rate(5)  # 5hz
+    rate = rospy.Rate(50)  # 5hz
     # record the beginning time
     while not rospy.is_shutdown():
         #print("Sending")
