@@ -36,7 +36,7 @@ class arm_mover2:
       j1 = (np.pi)*np.sin((np.pi/28)*t)
       j3 =(np.pi/2)*np.sin((np.pi/20)*t)
       j4 =(np.pi/2)*np.sin((np.pi/18)*t)
-      self.joint4.publish(j4)
+      # self.joint4.publish(j4)
       self.joint3.publish(j3)
       self.joint1.publish(j1)
         #print("Sending")

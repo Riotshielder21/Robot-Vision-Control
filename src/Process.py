@@ -54,9 +54,8 @@ class Image_processes:
         def calpixScale(self, base, p1,spacing=4):
                 # spacing = 4
                 return spacing/np.linalg.norm(base-p1)
-#----------------------------------------------------------------------------------------------------------       
-
-
+#----------------------------------------------------------------------------------------------------------
+        
         def anglesVis2(self, localCenters):
                 X = 0
                 Y =1
@@ -72,7 +71,6 @@ class Image_processes:
                 # green = self.pointToVector(centres['Green'])
 
                 j3 = self.getInnerAngle(green,yellow,blue)
-                # if green[Y] > blue.
                 j4 = self.getInnerAngle(yellow,blue,red)
                 self.xyDist(centres['Yellow'], centres['Blue'])
                  #check to see if the blue joint is in the 0 position
@@ -96,7 +94,10 @@ class Image_processes:
                         if joint1 < -(np.pi): ##Added Fudge Factor
                                 joint1 += 2*np.pi
                         print("here1")
-                        
+                # joint1 = np.abs(joint1)
+                #NOTE: there are two solutions and no way I can tell to pick the "Correct one". So the best approche I see is the 
+                # limit one joint to 180 degrees and then figure out the other two angles to produce a valid robot state
+                #  
                 
 
                 return np.array([joint1, 0, j3, j4])
@@ -154,8 +155,6 @@ class Image_processes:
                 cosineAngle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
 
                 angle = np.arccos(cosineAngle)
-                return angle
-
 #----------------------------------------------------------------------------------------------------------       
 
         # Perform image processing, green base joint not required
