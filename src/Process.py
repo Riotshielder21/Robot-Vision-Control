@@ -107,21 +107,26 @@ class Image_processes:
                 
         
 
+                if joint1 > 0:
+                        if j3<0:
+                                if(self.xDif(centres['Red'], centres['Blue'])>=0):
+                                        j4 = -j4
+                                        print("j4 diff pos <0")
+                
+                        else:
+                                if(self.xDif(centres['Red'], centres['Blue'])>=0):
+                                        j4 = -j4
+                                        print("j4 diff pos >0")
+                if joint1 < 0:
+                        if j3<0:
+                                if(self.xDif(centres['Red'], centres['Blue'])>=0):
+                                        j4 = -j4
+                                        print("j4 diff pos j1>0")
+                        else: 
+                                if(self.xDif(centres['Red'], centres['Blue'])>=0):
+                                        j4 = -j4
+                                        print("j4 diff pos j1<0 j3>0")
 
-                if j3<0:
-                        if(self.xDif(centres['Red'], centres['Blue'])>0):
-                                j4 = -j4
-                                print("j4 diff pos")
-                        elif self.yDif(centres['Red'], centres['Blue'])<0:
-                                j4 = -j4
-                                print("y diff for j4")
-                else:
-                        if(self.xDif(centres['Red'], centres['Blue'])<0):
-                                j4 = -j4
-                                print("j4 diff pos")
-                        elif self.yDif(centres['Red'], centres['Blue'])>0:
-                                j4 = -j4
-                                print("y diff for j4")
 
                 # joint1 = np.abs(joint1)
                 #NOTE: there are two solutions and no way I can tell to pick the "Correct one". So the best approch I see is the 
