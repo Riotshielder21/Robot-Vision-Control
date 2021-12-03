@@ -77,8 +77,9 @@ class Image_processes:
                 self.xyDist(centres['Yellow'], centres['Blue'])
                  #check to see if the blue joint is in the 0 position
                 print(self.xyDist(centres['Yellow'], centres['Blue']))
-                if (self.xyDist(centres['Yellow'], centres['Blue'])>0.001 ): # Prevent tracking off center blue ball
+                if (self.xyDist(centres['Yellow'], centres['Blue'])<0.35 ): # Prevent tracking off center blue ball
                         #check to see if the red joint is also in 0 position
+                        # print(self.xyDist(centres['Yellow'], centres['Red']))
                         if (self.xyDist(centres['Yellow'], centres['Red'])<0.05):
                                 joint1 = 0
                                 print("here3")
@@ -91,7 +92,7 @@ class Image_processes:
                 else:
                         #blue joint is useable to calculate rotation
                         #blue joint is useable to calculate rotation
-                        joint1 = -np.arctan2(centres['Yellow'][X]-centres['Blue'][X], centres['Yellow'][Y]-centres['Blue'][Y])-(np.pi/2)
+                        joint1 = -np.arctan2(centres['Yellow'][X]-centres['Blue'][X], centres['Yellow'][Y]-centres['Blue'][Y])
                         if joint1 < -(np.pi): ##Added Fudge Factor
                                 joint1 += 2*np.pi
                         print("here1")
