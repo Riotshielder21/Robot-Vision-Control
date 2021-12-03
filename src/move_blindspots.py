@@ -37,7 +37,7 @@ class arm_mover1:
       [0,-1.57,0,0], # Hide blue red camera 1
       [0,-1.5,1.5,1.5]
     ]
-    i = 2
+    i = 0
     while not rospy.is_shutdown():
       test = testcases[i]
       self.joint4.publish(test[3])

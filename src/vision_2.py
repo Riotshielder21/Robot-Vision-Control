@@ -35,7 +35,7 @@ class image_converter:
         # initialize a publisher to send joints' angular position to a topic called joints_pos
         self.joints_pub = rospy.Publisher(
             "joint_angles", Float64MultiArray, queue_size=1)
-        rate = rospy.Rate(5)  # 5hz
+        rate = rospy.Rate(50)  # 5hz
         # record the beginning time
         self.time_trajectory = rospy.get_time()
         while not rospy.is_shutdown():

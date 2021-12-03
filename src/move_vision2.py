@@ -32,11 +32,12 @@ class arm_mover2:
     # record the beginning time
     while not rospy.is_shutdown():
       t = rospy.get_time()
+      t*=4
       j1 = (np.pi)*np.sin((np.pi/28)*t)
       j3 =(np.pi/2)*np.sin((np.pi/20)*t)
       j4 =(np.pi/2)*np.sin((np.pi/18)*t)
-      self.joint4.publish(j4)
-      self.joint3.publish(j3)
+      self.joint4.publish(0)
+      self.joint3.publish(0)
       self.joint1.publish(j1)
         #print("Sending")
         # self.showimg()
