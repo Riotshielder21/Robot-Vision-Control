@@ -32,7 +32,8 @@ class image_converter:
         rate = rospy.Rate(50)  # 5hz
         
         x, y = 0.0, 0.0
-        rospy.Subscriber("/robot/joint_states", JointState, self.callback) 
+        rospy.Subscriber("/joint_angles", Float64MultiArray, self.callback) 
+        self.endpos = rospy.Publisher("/endpos", Float64MultiArray, queue_size = 1)
         while not rospy.is_shutdown():
             print("Sending")
             if x >= 2:
@@ -58,12 +59,12 @@ class image_converter:
         rotation = (i,j,k,r)
         return rotation
     def callback(self, data):
-        print("callback " + str(data.name))
-        print(data.position)
-        print(data)
-        a1 = data.position[0]
-        a2 = data.position[2]
-        a3 = data.position[3]
+        # print(data)
+        # print(data)
+        print(data.data)
+        a1 = data.data[0]
+        a2 = data.data[2]
+        a3 = data.data[3]
 
 
         # #Rot Z
@@ -90,7 +91,8 @@ class image_converter:
         # print(translation)
         arm2_len = 2.8
         arm1_len = 3.2
-        arm0_len = 4 + 0.5 #Offset for base of robot
+        # arm0_len = 4 + 0.5 #Offset for base of robot
+        arm0_len = 4
         x1 = arm2_len*math.sin(a1)*math.cos(a3)*math.sin(a2) + arm2_len*math.cos(a1)*math.sin(a3) + arm1_len*math.sin(a1)*math.sin(a2)
         y1 = arm2_len*math.sin(a1)*math.sin(a3)-math.cos(a1)*math.sin(a2)*(arm2_len*math.cos(a3)+arm1_len)
         z1 = (arm2_len*math.cos(a3)+arm1_len)*math.cos(a2)+arm0_len
@@ -99,7 +101,10 @@ class image_converter:
         # self.b.sendTransform(self.frame_to_pos(frame1), self.frame_to_rot(frame1), Time.now(), 't1', 't0')
         # self.b.sendTransform(self.frame_to_pos(frame2), self.frame_to_rot(frame2), Time.now(), 't2', 't1')
         # self.b.sendTransform(self.frame_to_pos(frame3), self.frame_to_rot(frame3), Time.now(), 't3', 't2')
+        
         self.b.sendTransform(translation, rotation, Time.now(), 'memes', 'base')
+        print(translation)
+        self.endpos.publish(Float64MultiArray(data=translation))
 
 
 
