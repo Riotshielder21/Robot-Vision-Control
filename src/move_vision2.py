@@ -28,7 +28,7 @@ class arm_mover2:
     self.joint1 = rospy.Publisher("/robot/joint1_position_controller/command", Float64 ,queue_size = 1)
     self.bridge = CvBridge()
    
-    rate = rospy.Rate(50)  # 5hz
+    rate = rospy.Rate(200)  # 5hz
     # record the beginning time
     while not rospy.is_shutdown():
       t = rospy.get_time()
@@ -36,9 +36,12 @@ class arm_mover2:
       j1 = (np.pi)*np.sin((np.pi/28)*t)
       j3 =(np.pi/2)*np.sin((np.pi/20)*t)
       j4 =(np.pi/2)*np.sin((np.pi/18)*t)
+
       # self.joint4.publish(j4)
-      self.joint3.publish(j3)
       self.joint1.publish(j1)
+      self.joint3.publish(j3)
+      self.joint1.publish(j4)
+
         #print("Sending")
         # self.showimg()
       rate.sleep()

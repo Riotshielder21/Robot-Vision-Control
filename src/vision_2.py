@@ -70,7 +70,7 @@ class image_converter:
             #print(matched)
             Angles = Float64MultiArray()
             Angles.data = im.anglesVis2(matched)
-            print(str(Angles.data)+"\n\n")
+            print(str(Angles.data)+"\n")
             self.joints_pub.publish(Angles)
         
     def calculate(self):

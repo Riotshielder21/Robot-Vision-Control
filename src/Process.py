@@ -72,9 +72,8 @@ class Image_processes:
 
                 j3 = self.getInnerAngle(green,yellow,blue)
                 j4 = self.getInnerAngle(yellow,blue,red)
-                self.xyDist(centres['Yellow'], centres['Blue'])
+        
                  #check to see if the blue joint is in the 0 position
-                print(self.xyDist(centres['Yellow'], centres['Blue']))
                 if (self.xyDist(centres['Yellow'], centres['Blue'])<0.35): # Prevent tracking off center blue ball
                         #check to see if the red joint is also in 0 position
                         # print(self.xyDist(centres['Yellow'], centres['Red']))
@@ -83,63 +82,67 @@ class Image_processes:
                                 print("here3")
                         else:
                                 #red joint is usable to calculate the angle
-                                joint1 = - np.arctan2(centres['Yellow'][X]-centres['Red'][X], centres['Yellow'][Y]-centres['Red'][Y])-(np.pi/2)
+                                joint1 = np.arctan2(centres['Yellow'][X]-centres['Red'][X], centres['Yellow'][Y]-centres['Red'][Y])-(np.pi/2)
                                 if joint1 < -(np.pi): ##Added Fudge Factor
                                         joint1 += 2*np.pi
                                 print("here2")
                 else:
                         #blue joint is useable to calculate rotation
-                        #blue joint is useable to calculate rotation
-                        joint1 = -np.arctan2(centres['Yellow'][X]-centres['Blue'][X], centres['Yellow'][Y]-centres['Blue'][Y])
+                        joint1 = np.arctan2(centres['Yellow'][X]-centres['Blue'][X], centres['Yellow'][Y]-centres['Blue'][Y])
                         if joint1 < -(np.pi+ 0.05): ##Added Fudge Factor
                                 joint1 += 2*np.pi
                         print("here1")
+                
+        
+        
+                if j3<0 and joint1>0:
+                        print("j3<")
+                        j3 = -j3
+                elif self.yDif(centres['Blue'], centres['Yellow'])>0 and joint1>0:
+                        print("j3y")
+                        j3 = -j3
+                elif self.yDif(centres['Blue'], centres['Yellow'])<0 and joint1<0:
+                        print("j3-")
+                        j3 = -j3
+                
+        
+
+
+                if j3<0:
+                        if(self.xDif(centres['Red'], centres['Blue'])>0):
+                                j4 = -j4
+                                print("j4 diff pos")
+                        elif self.yDif(centres['Red'], centres['Blue'])<0:
+                                j4 = -j4
+                                print("y diff for j4")
+                else:
+                        if(self.xDif(centres['Red'], centres['Blue'])<0):
+                                j4 = -j4
+                                print("j4 diff pos")
+                        elif self.yDif(centres['Red'], centres['Blue'])>0:
+                                j4 = -j4
+                                print("y diff for j4")
+
                 # joint1 = np.abs(joint1)
-                #NOTE: there are two solutions and no way I can tell to pick the "Correct one". So the best approche I see is the 
+                #NOTE: there are two solutions and no way I can tell to pick the "Correct one". So the best approch I see is the 
                 # limit one joint to 180 degrees and then figure out the other two angles to produce a valid robot state
                 #  
                 # getInnerAngle
-                j1 = joint1 # Smaller var name
-                # j1 = np.pi/2
-                print(blue)
-                rot = np.array([
-                        [np.cos(j1),-np.sin(j1),0],
-                        [np.sin(j1),np.cos(j1),0],
-                        [0,0,1]
-                ])
-                rotblue = np.dot(blue,rot)
-                # print(rotblue)
-                if rotblue[Y] > 0: # Does not work  Atempted to lock joint 1 and figure out 3 and 4
-                        j3 *= -1
-
+                # j1 = joint1 # Smaller var name
+                # # j1 = np.pi/2
+                # print(blue)
+                # rot = np.array([
+                #         [np.cos(j1),-np.sin(j1),0],
+                #         [np.sin(j1),np.cos(j1),0],
+                #         [0,0,1]
+                # ])
+                # rotblue = np.dot(blue,rot)
+                # # print(rotblue)
+                # if rotblue[Y] > 0: # Does not work  Atempted to lock joint 1 and figure out 3 and 4
+                #         j3 *= -1
+        
                 return np.array([joint1, 0, j3, j4])
-                # if joint1 > 0:
-                #         if(self.xDif(centres['Blue'], centres['Yellow'])>0):
-                #                 j3 = -j3 
-                #                 print("invert j3")
-                #         if(self.xDif(centres['Red'], centres['Blue'])<0):
-                #                 j4 = -j4
-                #                 print("j4 diff pos")
-                #         elif self.yDif(centres['Red'], centres['Blue'])<0:
-                #                 j4 = -j4
-                #                 print("y diff for j4")
-
-       
-                
-                # if joint1 < 0:
-                #         if(self.xDif(centres['Blue'], centres['Yellow'])<0):
-                #                 j3 = -j3
-
-                #                 print("invert j3")
-              
-                #         if(self.xDif(centres['Red'], centres['Blue'])>0):
-                #                 if self.yDif(centres['Red'], centres['Blue'])>0:
-                #                         j4 = -j4
-                #                         print("j4 diff neg,y obscured")
-                        
-                #         elif self.yDif(centres['Red'], centres['Blue'])>0:
-                #                 j4 = -j4
-                #                 print("y diff for j4")
+        
 
 
 #----------------------------------------------------------------------------------------------------------       
