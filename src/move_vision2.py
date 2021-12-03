@@ -40,7 +40,7 @@ class arm_mover2:
       # self.joint4.publish(j4)
       self.joint1.publish(j1)
       self.joint3.publish(j3)
-      self.joint1.publish(j4)
+      self.joint4.publish(j4)
 
         #print("Sending")
         # self.showimg()
