@@ -23,91 +23,92 @@ class Image_processes:
                 green = centres['Green']
                 print(red)
                 print("asdf")
-                # joint3 first as it affects the joint2 position if set
-                # link 3 angle, yellow yo blue 
-                if (centres['Yellow'][Z]-centres['Blue'][Z])>0:
-                        joint3 = np.pi/2 + np.arctan2((centres['Blue'][Z]-centres['Yellow'][Z]),(centres['Yellow'][Y]-centres['Blue'][Y]))
-                else:  
-                        joint3 = 0
                 
-                if joint3 > 1.5707:
-                        joint3 = joint3 - np.pi
-                if joint3 < -1.5707:
-                        joint3 = joint3 + np.pi
-
-                #link2 angle, Yellow to blue
-                if joint3 > 0.1:
-                        if (centres['Yellow'][Z]-centres['Red'][Z]) != 0:
-                                if round((centres['Yellow'][X]-centres['Red'][X]),2)>0:
-                                        joint2 = -np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))               
-                                        print("joint3>0 and red to left of yellow xz")
-                                elif round((centres['Yellow'][X]-centres['Red'][X]),2)<0:
-                                        joint2 = np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Red'][X]-centres['Yellow'][X]))               
-                                        print("joint3>0 and red to right of yellow xz")
-                                else: 
-                                        joint2 = -1.57
-                                        joint3 = -1.57
-                        else:
-                                joint2 = 0
-                elif joint3 < -0.1:
-                        if (centres['Yellow'][Z]-centres['Red'][Z]) != 0:
-                                if round((centres['Yellow'][X]-centres['Red'][X]),2)>0:
-                                        joint2 = np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))                
-                                        print("joint3<0 and red to right of yellow xz")
-                                elif round((centres['Yellow'][X]-centres['Red'][X]),2)<0:
-                                        joint2 = -np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))               
-                                        print("joint3<0 and red to right of yellow xz")
-                                else:
-                                        joint2 = 0
-                        else: 
-                                joint2 = 0
-
-                else:
-                        if (centres['Yellow'][Z]-centres['Blue'][Z]) !=0:
-                                joint2 = np.pi/2 + np.arctan2((centres['Blue'][Z]-centres['Yellow'][Z]),(centres['Blue'][X]-centres['Yellow'][X]))                
-                                print("joint 3 = 0")
-                        else:
-                                joint2 = 1.57
-                                print("joint 3 = 0 and z diff = 0")
-                if joint2 > 1.5707:
-                        joint2 = joint2 - np.pi
-                if joint2 < -1.5707:
-                        joint2 = joint2 + np.pi
-
-                #link 2 angle, yellow to blue
-                #print("z diff: "+str(centres['Yellow'][Z]-centres['Blue'][Z]))
-
-                if joint2 > 0.1 and (joint3 > 0.1 or joint3 < -0.1):
-                        if (centres['Blue'][Z]-centres['Red'][Z]) != 0:
-                                if (centres['Yellow'][X]-centres['Red'][X])>0:
-                                        joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
-                                        print("joint2>0 and red to left of yellow xz")
-                                else:
-                                        joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
-                                        print("joint2>0 and red to right of yellow xz")
-                        else:
-                                joint4 = 0
-                elif joint2 < -0.1 and (joint3 > 0.1 or joint3 < -0.1):
-
-                        if (centres['Blue'][Z]-centres['Red'][Z]) !=0:
-                                if (centres['Yellow'][X]-centres['Red'][X])>0:
-                                        joint4 = np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
-                                        print("joint2<0 and red to left of yellow xz")
-                                else:
-                                        joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
-                                        print("joint2<0 and red to right of yellow xz")
-                        else:
-                                joint4 = 0
-                                #print(joint4)
+                joint3 = ( np.pi/2)-(np.arctan2(centres['Blue'][Z]-centres['Yellow'][Z],centres['Yellow'][Y]-centres['Blue'][Y]) )
                 
+                joint2 = np.arctan2(centres['Green'][X]-(centres['Blue'][X]),(-centres['Green'][Z]-centres['Yellow'][Z]))
+                if joint2 > np.pi/2:
+                        joint2 -= np.pi
                 else:
-                        joint4 =np.pi/2 + np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X])) - joint2
+                        joint2 += np.pi
+                
+
+                joint4 = self.getInnerAngle(yellow,blue,red)
+                if green[X] > red[X]:
+                        joint4 *=-1
+                # #link2 angle, Yellow to blue
+                # # if joint3 > 0.1:
+                # #         if (centres['Yellow'][Z]-centres['Red'][Z]) != 0:
+                # #                 if round((centres['Yellow'][X]-centres['Red'][X]),2)>0:
+                # #                         joint2 = -np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))               
+                # #                         print("joint3>0 and red to left of yellow xz")
+                # #                 elif round((centres['Yellow'][X]-centres['Red'][X]),2)<0:
+                # #                         joint2 = np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Red'][X]-centres['Yellow'][X]))               
+                # #                         print("joint3>0 and red to right of yellow xz")
+                # #                 else: 
+                # #                         joint2 = -1.57
+                # #                         joint3 = -1.57
+                # #         else:
+                # #                 joint2 = 0
+                # # elif joint3 < -0.1:
+                # #         if (centres['Yellow'][Z]-centres['Red'][Z]) != 0:
+                # #                 if round((centres['Yellow'][X]-centres['Red'][X]),2)>0:
+                # #                         joint2 = np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))                
+                # #                         print("joint3<0 and red to right of yellow xz")
+                # #                 elif round((centres['Yellow'][X]-centres['Red'][X]),2)<0:
+                # #                         joint2 = -np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))               
+                # #                         print("joint3<0 and red to right of yellow xz")
+                # #                 else:
+                # #                         joint2 = 0
+                # #         else: 
+                # #                 joint2 = 0
+
+                # # else:
+                # #         if (centres['Yellow'][Z]-centres['Blue'][Z]) !=0:
+                # #                 joint2 = np.pi/2 + np.arctan2((centres['Blue'][Z]-centres['Yellow'][Z]),(centres['Blue'][X]-centres['Yellow'][X]))                
+                # #                 print("joint 3 = 0")
+                # #         else:
+                # #                 joint2 = 1.57
+                # #                 print("joint 3 = 0 and z diff = 0")
+                # # if joint2 > 1.5707:
+                # #         joint2 = joint2 - np.pi
+                # # if joint2 < -1.5707:
+                # #         joint2 = joint2 + np.pi
+
+                # #link 2 angle, yellow to blue
+                # #print("z diff: "+str(centres['Yellow'][Z]-centres['Blue'][Z]))
+
+                # if joint2 > 0.1 and (joint3 > 0.1 or joint3 < -0.1):
+                #         if (centres['Blue'][Z]-centres['Red'][Z]) != 0:
+                #                 if (centres['Yellow'][X]-centres['Red'][X])>0:
+                #                         joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
+                #                         print("joint2>0 and red to left of yellow xz")
+                #                 else:
+                #                         joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
+                #                         print("joint2>0 and red to right of yellow xz")
+                #         else:
+                #                 joint4 = 0
+                # elif joint2 < -0.1 and (joint3 > 0.1 or joint3 < -0.1):
+
+                #         if (centres['Blue'][Z]-centres['Red'][Z]) !=0:
+                #                 if (centres['Yellow'][X]-centres['Red'][X])>0:
+                #                         joint4 = np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
+                #                         print("joint2<0 and red to left of yellow xz")
+                #                 else:
+                #                         joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
+                #                         print("joint2<0 and red to right of yellow xz")
+                #         else:
+                #                 joint4 = 0
+                #                 #print(joint4)
+                
+                # else:
+                #         joint4 =np.pi/2 + np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X])) - joint2
                                
-                if joint4 > 1.5707:
-                        joint4 = joint4 - np.pi
-                if joint4 < -1.5707:
-                        joint4 = joint4 + np.pi
-                joint4 =  round(joint4,2)
+                # if joint4 > 1.5707:
+                #         joint4 = joint4 - np.pi
+                # if joint4 < -1.5707:
+                #         joint4 = joint4 + np.pi
+                # joint4 =  round(joint4,2)
                 #print(centres)
                 # red = self.pointToVector(centres['Red'])
                 # blue = self.pointToVector(centres['Blue'])
@@ -339,8 +340,8 @@ class Image_processes:
                                 cord1 = yzcenter[colour][axis]
                                 cord2 = xzcenter[colour][axis]
                                 if cord1 >= 0 and cord2 >= 0:
-                                        # out = np.mean([cord1,cord2])
-                                        out = cord2
+                                        out = np.mean([cord1,cord2])
+                                        # out = cord2
                                 else:
                                         out = np.max([cord1, cord2])
                                 if out > 0:

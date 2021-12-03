@@ -26,23 +26,36 @@ class arm_mover1:
     self.joint4 = rospy.Publisher("/robot/joint4_position_controller/command", Float64 ,queue_size = 1)
     self.joint3 = rospy.Publisher("/robot/joint3_position_controller/command", Float64 ,queue_size = 1)
     self.joint2 = rospy.Publisher("/robot/joint2_position_controller/command", Float64 ,queue_size = 1)
+    self.joint1 = rospy.Publisher("/robot/joint1_position_controller/command", Float64 ,queue_size = 1)
     self.bridge = CvBridge()
    
-    rate = rospy.Rate(50)  # 5hz
+    rate = rospy.Rate(1)  # 5hz
     # record the beginning time
     stime = rospy.get_time()
+    testcases = [
+      [0,0,0,0],
+      [0,-1.57,0,0], # Hide blue red camera 1
+      [0,-1.5,1.5,1.5]
+    ]
+    i = 2
     while not rospy.is_shutdown():
-      t = rospy.get_time()-stime
-      t*=4
-      j2 = (np.pi/2)*np.sin((np.pi/15)*t)
-      j3 =(np.pi/2)*np.sin((np.pi/20)*t)
-      j4 =(np.pi/2)*np.sin((np.pi/18)*t)
+      test = testcases[i]
+      self.joint4.publish(test[3])
+      self.joint3.publish(test[2])
+      self.joint2.publish(test[1])
+      self.joint1.publish(test[0])
+      print(test)
+      # input()
+      # t = rospy.get_time()-stime
+      # j2 = (np.pi/2)*np.sin((np.pi/15)*t)
+      # j3 =(np.pi/2)*np.sin((np.pi/20)*t)
+      # j4 =(np.pi/2)*np.sin((np.pi/18)*t)
       # self.joint4.publish(j4)
       # self.joint3.publish(j3)
-      self.joint2.publish(j2)
-        #print("Sending")
-        # self.showimg()
-      rate.sleep()
+      # self.joint2.publish(j2)
+      #   #print("Sending")
+      #   # self.showimg()
+      # rate.sleep()
 
 
 # call the class
