@@ -12,12 +12,21 @@ class Image_processes:
         def _init_(self):
                 return
  
-        def anglesVis1(self, centres):
-                
+        def anglesVis1(self, localCenters):
+                Z = 2
+                X = 0
+                Y =1
+                centres = self.shiftAndScalePixels(localCenters)
+                red = centres['Red']
+                blue = centres['Blue']
+                yellow = centres['Yellow']
+                green = centres['Green']
+                print(red)
+                print("asdf")
                 # joint3 first as it affects the joint2 position if set
                 # link 3 angle, yellow yo blue 
-                if (centres['Yellow']['z']-centres['Blue']['z'])>0:
-                        joint3 = np.pi/2 + np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Yellow']['y']-centres['Blue']['y']))
+                if (centres['Yellow'][Z]-centres['Blue'][Z])>0:
+                        joint3 = np.pi/2 + np.arctan2((centres['Blue'][Z]-centres['Yellow'][Z]),(centres['Yellow'][Y]-centres['Blue'][Y]))
                 else:  
                         joint3 = 0
                 
@@ -28,12 +37,12 @@ class Image_processes:
 
                 #link2 angle, Yellow to blue
                 if joint3 > 0.1:
-                        if (centres['Yellow']['z']-centres['Red']['z']) != 0:
-                                if round((centres['Yellow']['x']-centres['Red']['x']),2)>0:
-                                        joint2 = -np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))               
+                        if (centres['Yellow'][Z]-centres['Red'][Z]) != 0:
+                                if round((centres['Yellow'][X]-centres['Red'][X]),2)>0:
+                                        joint2 = -np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))               
                                         print("joint3>0 and red to left of yellow xz")
-                                elif round((centres['Yellow']['x']-centres['Red']['x']),2)<0:
-                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Red']['x']-centres['Yellow']['x']))               
+                                elif round((centres['Yellow'][X]-centres['Red'][X]),2)<0:
+                                        joint2 = np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Red'][X]-centres['Yellow'][X]))               
                                         print("joint3>0 and red to right of yellow xz")
                                 else: 
                                         joint2 = -1.57
@@ -41,12 +50,12 @@ class Image_processes:
                         else:
                                 joint2 = 0
                 elif joint3 < -0.1:
-                        if (centres['Yellow']['z']-centres['Red']['z']) != 0:
-                                if round((centres['Yellow']['x']-centres['Red']['x']),2)>0:
-                                        joint2 = np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))                
+                        if (centres['Yellow'][Z]-centres['Red'][Z]) != 0:
+                                if round((centres['Yellow'][X]-centres['Red'][X]),2)>0:
+                                        joint2 = np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))                
                                         print("joint3<0 and red to right of yellow xz")
-                                elif round((centres['Yellow']['x']-centres['Red']['x']),2)<0:
-                                        joint2 = -np.arctan2((centres['Red']['z']-centres['Yellow']['z']),(centres['Yellow']['x']-centres['Red']['x']))               
+                                elif round((centres['Yellow'][X]-centres['Red'][X]),2)<0:
+                                        joint2 = -np.arctan2((centres['Red'][Z]-centres['Yellow'][Z]),(centres['Yellow'][X]-centres['Red'][X]))               
                                         print("joint3<0 and red to right of yellow xz")
                                 else:
                                         joint2 = 0
@@ -54,8 +63,8 @@ class Image_processes:
                                 joint2 = 0
 
                 else:
-                        if (centres['Yellow']['z']-centres['Blue']['z']) !=0:
-                                joint2 = np.pi/2 + np.arctan2((centres['Blue']['z']-centres['Yellow']['z']),(centres['Blue']['x']-centres['Yellow']['x']))                
+                        if (centres['Yellow'][Z]-centres['Blue'][Z]) !=0:
+                                joint2 = np.pi/2 + np.arctan2((centres['Blue'][Z]-centres['Yellow'][Z]),(centres['Blue'][X]-centres['Yellow'][X]))                
                                 print("joint 3 = 0")
                         else:
                                 joint2 = 1.57
@@ -66,33 +75,33 @@ class Image_processes:
                         joint2 = joint2 + np.pi
 
                 #link 2 angle, yellow to blue
-                #print("z diff: "+str(centres['Yellow']['z']-centres['Blue']['z']))
+                #print("z diff: "+str(centres['Yellow'][Z]-centres['Blue'][Z]))
 
                 if joint2 > 0.1 and (joint3 > 0.1 or joint3 < -0.1):
-                        if (centres['Blue']['z']-centres['Red']['z']) != 0:
-                                if (centres['Yellow']['x']-centres['Red']['x'])>0:
-                                        joint4 = -np.arctan2((centres['Red']['z']-centres['Blue']['z']),(centres['Red']['x']-centres['Blue']['x']))
+                        if (centres['Blue'][Z]-centres['Red'][Z]) != 0:
+                                if (centres['Yellow'][X]-centres['Red'][X])>0:
+                                        joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
                                         print("joint2>0 and red to left of yellow xz")
                                 else:
-                                        joint4 = -np.arctan2((centres['Red']['z']-centres['Blue']['z']),(centres['Red']['x']-centres['Blue']['x']))
+                                        joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
                                         print("joint2>0 and red to right of yellow xz")
                         else:
                                 joint4 = 0
                 elif joint2 < -0.1 and (joint3 > 0.1 or joint3 < -0.1):
 
-                        if (centres['Blue']['z']-centres['Red']['z']) !=0:
-                                if (centres['Yellow']['x']-centres['Red']['x'])>0:
-                                        joint4 = np.arctan2((centres['Red']['z']-centres['Blue']['z']),(centres['Red']['x']-centres['Blue']['x']))
+                        if (centres['Blue'][Z]-centres['Red'][Z]) !=0:
+                                if (centres['Yellow'][X]-centres['Red'][X])>0:
+                                        joint4 = np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
                                         print("joint2<0 and red to left of yellow xz")
                                 else:
-                                        joint4 = -np.arctan2((centres['Red']['z']-centres['Blue']['z']),(centres['Red']['x']-centres['Blue']['x']))
+                                        joint4 = -np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X]))
                                         print("joint2<0 and red to right of yellow xz")
                         else:
                                 joint4 = 0
                                 #print(joint4)
                 
                 else:
-                        joint4 =np.pi/2 + np.arctan2((centres['Red']['z']-centres['Blue']['z']),(centres['Red']['x']-centres['Blue']['x'])) - joint2
+                        joint4 =np.pi/2 + np.arctan2((centres['Red'][Z]-centres['Blue'][Z]),(centres['Red'][X]-centres['Blue'][X])) - joint2
                                
                 if joint4 > 1.5707:
                         joint4 = joint4 - np.pi
@@ -100,47 +109,61 @@ class Image_processes:
                         joint4 = joint4 + np.pi
                 joint4 =  round(joint4,2)
                 #print(centres)
-                red = self.pointToVector(centres['Red'])
-                blue = self.pointToVector(centres['Blue'])
-                yellow = self.pointToVector(centres['Yellow'])
-                green = self.pointToVector(centres['Green'])
+                # red = self.pointToVector(centres['Red'])
+                # blue = self.pointToVector(centres['Blue'])
+                # yellow = self.pointToVector(centres['Yellow'])
+                # green = self.pointToVector(centres['Green'])
 
-                # calculate angle
-                hybrid = self.getInnerAngle(green,yellow,blue)
-                j4 = self.getInnerAngle(yellow,blue,red)
+                # # calculate angle
+                # hybrid = self.getInnerAngle(green,yellow,blue)
+                # j4 = self.getInnerAngle(yellow,blue,red)
                 
-                #adjust for persepctive distortion
-                # if j2>0.5:
-                #         j3 = j3 - j2*0.2
-                # if j3>1:
-                #         j2 = j2 - j3*0.6
-                # print(np.array([0,j2,j3,j4]))
-                ms = self.calpixScale(green, yellow)
-                # ms = 1
-                mred = ms* red
-                mblue = ms * blue
-                myellow = ms * yellow
-                mgreen = ms * green
-                mred = mred - mgreen
-                mblue = mblue - mgreen
-                myellow = myellow - mgreen
-                mgreen = mgreen - mgreen
+                # #adjust for persepctive distortion
+                # # if j2>0.5:
+                # #         j3 = j3 - j2*0.2
+                # # if j3>1:
+                # #         j2 = j2 - j3*0.6
+                # # print(np.array([0,j2,j3,j4]))
+                # # ms = self.calpixScale(green, yellow)
+                # # ms = 1
+                # # mred = ms* red
+                # # mblue = ms * blue
+                # # myellow = ms * yellow
+                # # mgreen = ms * green
+                # # mred = mred - mgreen
+                # # mblue = mblue - mgreen
+                # # myellow = myellow - mgreen
+                # # mgreen = mgreen - mgreen
+                # # mred = localCenters['Red']
+                # # mblue = localCenters['Blue']
+                # # myellow = localCenters['Yellow']
+                # # mgreen = localCenters['Green']
                 self.b = TransformBroadcaster()
                 rotation = [0,0,0,1]
-                self.b.sendTransform(mred, rotation, Time.now(), 'red', 'link0')
-                self.b.sendTransform(mblue, rotation, Time.now(), 'blue', 'link0')
-                self.b.sendTransform(myellow, rotation, Time.now(), 'yellow', 'link0')                                                                                                                                                                                                  
-                self.b.sendTransform(mgreen, rotation, Time.now(), 'green', 'link0')
-                
-                # joint2 = np.arctan2(green[1]-blue[1], green[2]-blue[2])
-                print(self.calpixScale(yellow, blue))
-                # print(self.calpixScale(green, yellow))
-                # Z scale = 0.0386                                              
-                # X scale = 0.0391
-                return np.array([0, joint2, joint3, j4])
+                self.b.sendTransform(red, rotation, Time.now(), 'red', 'link0')
+                self.b.sendTransform(blue, rotation, Time.now(), 'blue', 'link0')
+                self.b.sendTransform(yellow, rotation, Time.now(), 'yellow', 'link0')                                                                                                                                                                                                  
+                self.b.sendTransform(green, rotation, Time.now(), 'green', 'link0')
 
-        def calpixScale(self, base, p1):
-                spacing = 4
+                # listener = tf.TransformListener()
+                # trueValues = {}
+                # try:    
+                #         listener.waitForTransform("/link0", "/link1", rospy.Time.now(), rospy.Duration(4.0))
+                #         # (trans1,rot) = listener.lookupTransform('/link0', '/link1')
+                #         # (trans2,rot) = listener.lookupTransform('/link0', '/link2', rospy.Time.now())
+                #         print(trans1)
+                #         print(trans2)
+                # except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                #         print("Error")
+                #         # pass
+                
+               
+                # # Z scale = 0.0386                                              
+                # # X scale = 0.0391
+                return np.array([0, joint2, joint3, joint4])
+
+        def calpixScale(self, base, p1,spacing=4):
+                # spacing = 4
                 return spacing/np.linalg.norm(base-p1)
 #----------------------------------------------------------------------------------------------------------       
 
@@ -316,16 +339,14 @@ class Image_processes:
                                 cord1 = yzcenter[colour][axis]
                                 cord2 = xzcenter[colour][axis]
                                 if cord1 >= 0 and cord2 >= 0:
-                                        out = np.mean([cord1,cord2])
+                                        # out = np.mean([cord1,cord2])
+                                        out = cord2
                                 else:
                                         out = np.max([cord1, cord2])
                                 if out > 0:
                                         matchCoords[colour][axis] = out
                                 else:
                                         matchCoords[colour][axis] = -1
-                                if axis == 'z' and matchCoords[colour][axis] >= 0 :
-                                        matchCoords[colour][axis] = -matchCoords[colour][axis]
-
                                         #print("Warning missing data")
 
                 if centres['xz']['Yellow']['y'] == -1:
@@ -353,5 +374,29 @@ class Image_processes:
                         matchCoords["Red"]['x'] = matchCoords["Blue"]['x']
                 if matchCoords["Red"]['y'] == -1:
                         matchCoords["Red"]['y'] = matchCoords["Blue"]['y']
-                #print(matchCoords)
+
+                
+                # #print(matchCoords)
                 return matchCoords
+
+        def shiftAndScalePixels(self, centers):
+                out = {}
+
+                for c in centers:
+                        out[c] = self.pointToVector(centers[c])
+                # print(out)
+                # link1dist = np.linalg.norm(out["Green"]-out["Yellow"])
+                # zscale = self.calpixScale(out["Green"],out["Yellow"])
+                # xyscale = self.calpixScale(out["Blue"],out["Yellow"],spacing=3.2)
+                # xyscale = 3.2/(out["Blue"]-out["Yellow"])
+                offset = out['Green']
+                for c in out:
+                        out[c] = (out[c] - offset)* 0.0386
+                        # out
+                        out[c][2] *= -1
+                out["Yellow"][1] = out["Green"][1] #Force yellow to be inline with green
+                out["Yellow"][0] = out["Green"][0]
+                out["Yellow"][2] = 4
+                print(out)
+                return out
+

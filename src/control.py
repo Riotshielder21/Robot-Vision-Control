@@ -60,6 +60,7 @@ class image_converter:
     def callback(self, data):
         print("callback " + str(data.name))
         print(data.position)
+        print(data)
         a1 = data.position[0]
         a2 = data.position[2]
         a3 = data.position[3]
