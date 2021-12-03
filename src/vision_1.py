@@ -31,15 +31,27 @@ class image_converter:
 
         self.yzcoord = rospy.Subscriber("/yzCoords", String, self.callbackyz)
         self.xzcoord = rospy.Subscriber("/xzCoords", String, self.callbackxz)
-
+        self.pjoint4 = rospy.Publisher("/robot/joint4_position_controller/command", Float64 ,queue_size = 1)
+        self.pjoint3 = rospy.Publisher("/robot/joint3_position_controller/command", Float64 ,queue_size = 1)
+        self.pjoint2 = rospy.Publisher("/robot/joint2_position_controller/command", Float64 ,queue_size = 1)
+        self.pbridge = CvBridge()
+   
         # initialize a publisher to send joints' angular position to a topic called joints_pos
         self.joints_pub = rospy.Publisher(
             "joint_angles", Float64MultiArray, queue_size=1)
         rate = rospy.Rate(50)  # 5hz
         # record the beginning time
+        stime = rospy.get_time()
         self.time_trajectory = rospy.get_time()
         while not rospy.is_shutdown():
             #print("Sending")
+            t = rospy.get_time()-stime
+            j2 = (np.pi/2)*np.sin((np.pi/15)*t)
+            j3 =(np.pi/2)*np.sin((np.pi/20)*t)
+            j4 =(np.pi/2)*np.sin((np.pi/18)*t)
+            self.pjoint4.publish(j4)
+            self.pjoint3.publish(j3)
+            self.pjoint2.publish(j2)
             self.anglesPublish(self.CentresDict)
             rate.sleep()
 
